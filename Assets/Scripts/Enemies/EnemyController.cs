@@ -14,7 +14,7 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        PlaceSpawner(transform.position + new Vector3(10, 0, 10), transform.rotation);
     }
 
     // Update is called once per frame
@@ -38,6 +38,23 @@ public class EnemyController : MonoBehaviour
             dict = dict.Concat(spawner.GetInstantiatedEnemies());
         }
         return dict.ToDictionary(group => group.Key, group => group.Value);
+    }
+
+    public GameObject GetClosestEnemy(Vector3 point) {
+        float minDistance = float.MaxValue;
+        GameObject closestEnemy = null;
+        
+        foreach (var enemy in GetInstantiatedEnemies().Keys)
+        {
+            var distance = Vector3.Distance(point, enemy.transform.position);
+            if (distance < minDistance)
+            {
+                closestEnemy = enemy;
+                minDistance = distance;
+            }
+        }
+
+        return closestEnemy;
     }
 
     public void DealDamageTo(GameObject enemy, int damage)

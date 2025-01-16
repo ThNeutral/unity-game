@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,26 +13,27 @@ public class TowerController : MonoBehaviour
 
     private Dictionary<GameObject, BaseTower> instantiatedTowers = new();
     // Start is called before the first frame update
-    void Start()
+    void Start() 
     {
-        enemyController = FindObjectOfType<EnemyController>();;
+        enemyController = FindObjectOfType<EnemyController>();
+        PlaceTower(transform.position + new Vector3(-10, 0, -10), transform.rotation);
     }
 
     // Update is called once per frame
     void Update()
     {
-        var enemies = enemyController.GetInstantiatedEnemies().ToList();
-
-        foreach (var tower in instantiatedTowers.Keys) 
+        foreach (var kvp in instantiatedTowers) 
         {
-            var behaviour = instantiatedTowers[tower];
+            var behaviour = kvp.Value;
             behaviour.AddToCounter(Time.deltaTime);
 
-            if (enemies.Count == 0) continue;
-        
             if (behaviour.IsReady())
             {
-                behaviour.ShootAt(enemies[UnityEngine.Random.Range(0, enemies.Count - 1)].Key);
+                var enemy = enemyController.GetClosestEnemy(kvp.Key.transform.position);
+                if (enemy != null)
+                {
+                    behaviour.ShootAt(enemy);
+                }
             }
         }
     }

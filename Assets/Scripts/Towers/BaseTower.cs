@@ -42,11 +42,13 @@ public class BaseTower : MonoBehaviour
 
         return false;
     }
-
     public void ShootAt(GameObject enemy)
     {
         var enemyBehaviour = enemy.GetComponent<BaseEnemy>();
-
+        ShootAt(enemy, enemyBehaviour);
+    }
+    public void ShootAt(GameObject enemy, BaseEnemy enemyBehaviour)
+    {
         var enemyMoveDirection = enemyBehaviour.GetMoveDirection();
         var enemySpeed = enemyBehaviour.GetSpeed();
         var enemyPosition = enemy.transform.position;
@@ -54,13 +56,13 @@ public class BaseTower : MonoBehaviour
 
         var t = (enemyPosition - selfPosition).magnitude / projectileSpeed;
 
-        var enemyFuturePosition = enemyPosition + enemySpeed * t * enemyMoveDirection; 
+        var enemyFuturePosition = enemyPosition + enemySpeed * t * enemyMoveDirection;
 
         var direction = (enemyFuturePosition - selfPosition).normalized;
         var rotation = Quaternion.LookRotation(direction);
 
-        var projectileBehaviour = Instantiate(projectile, direction, rotation).GetComponent<BaseProjectile>();
-    
+        var projectileBehaviour = Instantiate(projectile, transform.position, rotation).GetComponent<BaseProjectile>();
+
         projectileBehaviour.SetDirection(direction);
         projectileBehaviour.SetSpeed(projectileSpeed);
         projectileBehaviour.SetDamage(damage);
