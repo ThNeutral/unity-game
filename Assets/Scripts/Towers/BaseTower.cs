@@ -27,7 +27,7 @@ public class BaseTower : MonoBehaviour
     public void SetEnemyController(EnemyController controller) {
         enemyController = controller;
     }
-    public void UpdateCounter(float time)
+    public void AddToCounter(float time)
     {
         counter += time;
     }

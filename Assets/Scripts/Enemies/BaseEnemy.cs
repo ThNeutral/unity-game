@@ -19,6 +19,7 @@ public class BaseEnemy : MonoBehaviour
             moveDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
         } while (moveDirection.magnitude == 0);
         moveDirection = moveDirection.normalized;
+        moveDirection = Vector3.zero;
     }
 
     // Update is called once per frame

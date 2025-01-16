@@ -12,14 +12,11 @@ public class TowerController : MonoBehaviour
 
     private EnemyController enemyController;
 
-    private List<GameObject> instantiatedTowers = new();
+    private Dictionary<GameObject, BaseTower> instantiatedTowers = new();
     // Start is called before the first frame update
     void Start()
     {
-        var tower = PlaceTower();
-
-        enemyController = FindObjectOfType<EnemyController>();
-        tower.GetComponent<BaseTower>().SetEnemyController(enemyController);
+        enemyController = FindObjectOfType<EnemyController>();;
     }
 
     // Update is called once per frame
@@ -27,10 +24,10 @@ public class TowerController : MonoBehaviour
     {
         var enemies = enemyController.GetInstantiatedEnemies().ToList();
 
-        foreach (var tower in instantiatedTowers) 
+        foreach (var tower in instantiatedTowers.Keys) 
         {
-            var behaviour = tower.GetComponent<BaseTower>();
-            behaviour.UpdateCounter(Time.deltaTime);
+            var behaviour = instantiatedTowers[tower];
+            behaviour.AddToCounter(Time.deltaTime);
 
             if (enemies.Count == 0) continue;
         
@@ -40,22 +37,18 @@ public class TowerController : MonoBehaviour
             }
         }
     }
-    public GameObject PlaceTower()
-    {
-        var tower = Instantiate(towerPrefab);
-        instantiatedTowers.Add(tower);
-        return tower;
-    }
+
     public GameObject PlaceTower(Vector3 position, Quaternion rotation)
     {
-        var tower = Instantiate(towerPrefab, position, rotation);
-        instantiatedTowers.Add(tower);
-        return tower;
+        return PlaceTower(towerPrefab, position, rotation);
     }
+
     public GameObject PlaceTower(GameObject towerPrefab, Vector3 position, Quaternion rotation)
     {
         var tower = Instantiate(towerPrefab, position, rotation);
-        instantiatedTowers.Add(tower);
+        var behaviour = tower.GetComponentInChildren<BaseTower>();
+        behaviour.SetEnemyController(enemyController);
+        instantiatedTowers[tower] = behaviour;
         return tower;
     }
 }
