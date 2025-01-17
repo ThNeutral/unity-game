@@ -16,6 +16,9 @@ public class BaseTower : MonoBehaviour
     [SerializeField]
     private int damage = 1;
 
+    [SerializeField]
+    private float maximumRange = 30f;
+
     private float counter;
 
     private EnemyController enemyController;
@@ -38,7 +41,8 @@ public class BaseTower : MonoBehaviour
             }
         }
     }
-    public void SetEnemyController(EnemyController controller) {
+    public void SetEnemyController(EnemyController controller) 
+    {
         enemyController = controller;
     }
     public void SetTowerController(TowerController controller)
@@ -66,5 +70,6 @@ public class BaseTower : MonoBehaviour
         projectileBehaviour.SetSpeed(projectileSpeed);
         projectileBehaviour.SetDamage(damage);
         projectileBehaviour.SetEnemyController(enemyController);
+        projectileBehaviour.SetMaximumRange(maximumRange);
     }
 }

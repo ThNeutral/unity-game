@@ -14,7 +14,10 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlaceSpawner(transform.position + new Vector3(10, 0, 10), transform.rotation);
+        PlaceSpawner(transform.position + new Vector3(10, 0, 8), transform.rotation);
+        PlaceSpawner(transform.position + new Vector3(8, 0, 10), transform.rotation);
+        PlaceSpawner(transform.position + new Vector3(6, 0, 10), transform.rotation);
+        PlaceSpawner(transform.position + new Vector3(10, 0, 6), transform.rotation);
     }
 
     // Update is called once per frame

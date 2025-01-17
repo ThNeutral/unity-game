@@ -9,15 +9,23 @@ public class BaseProjectile : MonoBehaviour
     private float speed;
     private int damage;
     private EnemyController enemyController;
+    private float maximumRange;
+
+    private Vector3 startingPosition;
     // Start is called before the first frame update
     void Start()
     {
+        startingPosition = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
         transform.position += speed * Time.deltaTime * direction;
+        if (Vector3.Distance(startingPosition, transform.position) > maximumRange)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -43,5 +51,9 @@ public class BaseProjectile : MonoBehaviour
     public void SetEnemyController(EnemyController controller)
     {
         enemyController = controller;
+    }
+    public void SetMaximumRange(float range)
+    {
+        maximumRange = range;
     }
 }

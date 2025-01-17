@@ -19,8 +19,9 @@ public class TowerController : MonoBehaviour
     void Start() 
     {
         enemyController = FindObjectOfType<EnemyController>();
-        aimingStrategy = new TestAimingStrategy();
-        PlaceTower(transform.position + new Vector3(-10, 0, -10), transform.rotation);
+        aimingStrategy = new ClosestAimingStrategy();
+        PlaceTower(transform.position + new Vector3(-10, 0, -8), transform.rotation);
+        PlaceTower(transform.position + new Vector3(-8, 0, -10), transform.rotation);
     }
 
     // Update is called once per frame
@@ -33,15 +34,27 @@ public class TowerController : MonoBehaviour
     }
     public BaseEnemy GetTarget(BaseTower tower)
     {
-        if (targets.Count == 0 || !targets.TryGetValue(tower, out List<BaseEnemy> enemies) || enemies.Count == 0) return null;
-        var index = Random.Range(0, enemies.Count);
-        var enemy = enemies[index];
-        enemies.RemoveAt(index);
+        BaseEnemy target = null;
+        
+        var noTargets = targets.Count == 0;
+        var noTower = !targets.TryGetValue(tower, out List<BaseEnemy> enemies);
+        if (noTargets || noTower) return target;
+        
+        var noTargetsForTower = enemies.Count == 0;
+
+        if (!noTargetsForTower)
+        {
+            int index = Random.Range(0, enemies.Count);
+            target = enemies[index];
+            enemies.RemoveAt(index);
+        }
+
         if (enemies.Count == 0)
         {
             targets.Remove(tower);
         }
-        return enemy;
+        
+        return target;
     }
     public GameObject PlaceTower(Vector3 position, Quaternion rotation)
     {
