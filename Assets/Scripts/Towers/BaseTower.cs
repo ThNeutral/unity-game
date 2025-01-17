@@ -19,49 +19,48 @@ public class BaseTower : MonoBehaviour
     private float counter;
 
     private EnemyController enemyController;
+    private TowerController towerController;
     // Start is called before the first frame update
     void Start()
     {
         
     }
+    void Update()
+    {
+        counter += Time.deltaTime;
+        if (counter > shootSpeed) 
+        {
+            var target = towerController.GetTarget(this);
+            if (target != null)
+            {
+                ShootAt(target);
+                counter = 0;
+            }
+        }
+    }
     public void SetEnemyController(EnemyController controller) {
         enemyController = controller;
     }
-    public void AddToCounter(float time)
+    public void SetTowerController(TowerController controller)
     {
-        counter += time;
+        towerController = controller;
     }
-
-    public bool IsReady()
-    {
-        if (counter > shootSpeed) 
-        {
-            counter = 0;
-            return true;
-        }
-
-        return false;
-    }
-    public void ShootAt(GameObject enemy)
-    {
-        var enemyBehaviour = enemy.GetComponent<BaseEnemy>();
-        ShootAt(enemy, enemyBehaviour);
-    }
-    public void ShootAt(GameObject enemy, BaseEnemy enemyBehaviour)
+    public void ShootAt(BaseEnemy enemyBehaviour)
     {
         var enemyMoveDirection = enemyBehaviour.GetMoveDirection();
         var enemySpeed = enemyBehaviour.GetSpeed();
-        var enemyPosition = enemy.transform.position;
+        var enemyPosition = enemyBehaviour.transform.position;
         var selfPosition = transform.position;
 
-        var t = (enemyPosition - selfPosition).magnitude / projectileSpeed;
+        var estimatedFlightTime = (enemyPosition - selfPosition).magnitude / projectileSpeed;
 
-        var enemyFuturePosition = enemyPosition + enemySpeed * t * enemyMoveDirection;
+        var enemyFuturePosition = enemyPosition + enemySpeed * estimatedFlightTime * enemyMoveDirection;
 
         var direction = (enemyFuturePosition - selfPosition).normalized;
+        var position = transform.position + direction * 0.5f;
         var rotation = Quaternion.LookRotation(direction);
 
-        var projectileBehaviour = Instantiate(projectile, transform.position, rotation).GetComponent<BaseProjectile>();
+        var projectileBehaviour = Instantiate(projectile, position, rotation).GetComponent<BaseProjectile>();
 
         projectileBehaviour.SetDirection(direction);
         projectileBehaviour.SetSpeed(projectileSpeed);
