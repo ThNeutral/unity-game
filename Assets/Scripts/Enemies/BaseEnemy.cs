@@ -14,11 +14,7 @@ public class BaseEnemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        do
-        {
-            moveDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
-        } while (moveDirection.magnitude == 0);
-        moveDirection = moveDirection.normalized;
+        moveDirection = (new Vector3(-10, 0, -10) - transform.position).normalized;
     }
 
     // Update is called once per frame

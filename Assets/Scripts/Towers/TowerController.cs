@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,50 +11,63 @@ public class TowerController : MonoBehaviour
 
     private EnemyController enemyController;
 
-    private List<GameObject> instantiatedTowers = new();
-    // Start is called before the first frame update
-    void Start()
-    {
-        var tower = PlaceTower();
+    private Dictionary<GameObject, BaseTower> instantiatedTowers = new();
 
+    private IAimingStrategy aimingStrategy;
+    private Dictionary<BaseTower, List<BaseEnemy>> targets = new();
+    // Start is called before the first frame update
+    void Start() 
+    {
         enemyController = FindObjectOfType<EnemyController>();
-        tower.GetComponent<BaseTower>().SetEnemyController(enemyController);
+        aimingStrategy = new ClosestAimingStrategy();
+        PlaceTower(transform.position + new Vector3(-10, 0, -8), transform.rotation);
+        PlaceTower(transform.position + new Vector3(-8, 0, -10), transform.rotation);
     }
 
     // Update is called once per frame
     void Update()
     {
-        var enemies = enemyController.GetInstantiatedEnemies().ToList();
-
-        foreach (var tower in instantiatedTowers) 
+        if (targets.Count == 0)
         {
-            var behaviour = tower.GetComponent<BaseTower>();
-            behaviour.UpdateCounter(Time.deltaTime);
-
-            if (enemies.Count == 0) continue;
-        
-            if (behaviour.IsReady())
-            {
-                behaviour.ShootAt(enemies[UnityEngine.Random.Range(0, enemies.Count - 1)].Key);
-            }
+            targets = aimingStrategy.GetTargets(instantiatedTowers, enemyController.GetInstantiatedEnemies());
         }
     }
-    public GameObject PlaceTower()
+    public BaseEnemy GetTarget(BaseTower tower)
     {
-        var tower = Instantiate(towerPrefab);
-        instantiatedTowers.Add(tower);
-        return tower;
+        BaseEnemy target = null;
+        
+        var noTargets = targets.Count == 0;
+        var noTower = !targets.TryGetValue(tower, out List<BaseEnemy> enemies);
+        if (noTargets || noTower) return target;
+        
+        var noTargetsForTower = enemies.Count == 0;
+
+        if (!noTargetsForTower)
+        {
+            int index = Random.Range(0, enemies.Count);
+            target = enemies[index];
+            enemies.RemoveAt(index);
+        }
+
+        if (enemies.Count == 0)
+        {
+            targets.Remove(tower);
+        }
+        
+        return target;
     }
     public GameObject PlaceTower(Vector3 position, Quaternion rotation)
     {
-        var tower = Instantiate(towerPrefab, position, rotation);
-        instantiatedTowers.Add(tower);
-        return tower;
+        return PlaceTower(towerPrefab, position, rotation);
     }
+
     public GameObject PlaceTower(GameObject towerPrefab, Vector3 position, Quaternion rotation)
     {
         var tower = Instantiate(towerPrefab, position, rotation);
-        instantiatedTowers.Add(tower);
+        var behaviour = tower.GetComponentInChildren<BaseTower>();
+        behaviour.SetEnemyController(enemyController);
+        behaviour.SetTowerController(this);
+        instantiatedTowers[tower] = behaviour;
         return tower;
     }
 }

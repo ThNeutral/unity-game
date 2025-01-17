@@ -16,54 +16,60 @@ public class BaseTower : MonoBehaviour
     [SerializeField]
     private int damage = 1;
 
+    [SerializeField]
+    private float maximumRange = 30f;
+
     private float counter;
 
     private EnemyController enemyController;
+    private TowerController towerController;
     // Start is called before the first frame update
     void Start()
     {
         
     }
-    public void SetEnemyController(EnemyController controller) {
-        enemyController = controller;
-    }
-    public void UpdateCounter(float time)
+    void Update()
     {
-        counter += time;
-    }
-
-    public bool IsReady()
-    {
+        counter += Time.deltaTime;
         if (counter > shootSpeed) 
         {
-            counter = 0;
-            return true;
+            var target = towerController.GetTarget(this);
+            if (target != null)
+            {
+                ShootAt(target);
+                counter = 0;
+            }
         }
-
-        return false;
     }
-
-    public void ShootAt(GameObject enemy)
+    public void SetEnemyController(EnemyController controller) 
     {
-        var enemyBehaviour = enemy.GetComponent<BaseEnemy>();
-
+        enemyController = controller;
+    }
+    public void SetTowerController(TowerController controller)
+    {
+        towerController = controller;
+    }
+    public void ShootAt(BaseEnemy enemyBehaviour)
+    {
         var enemyMoveDirection = enemyBehaviour.GetMoveDirection();
         var enemySpeed = enemyBehaviour.GetSpeed();
-        var enemyPosition = enemy.transform.position;
+        var enemyPosition = enemyBehaviour.transform.position;
         var selfPosition = transform.position;
 
-        var t = (enemyPosition - selfPosition).magnitude / projectileSpeed;
+        var estimatedFlightTime = (enemyPosition - selfPosition).magnitude / projectileSpeed;
 
-        var enemyFuturePosition = enemyPosition + enemySpeed * t * enemyMoveDirection; 
+        var enemyFuturePosition = enemyPosition + enemySpeed * estimatedFlightTime * enemyMoveDirection;
 
         var direction = (enemyFuturePosition - selfPosition).normalized;
+        var position = transform.position + direction * 0.5f;
         var rotation = Quaternion.LookRotation(direction);
 
-        var projectileBehaviour = Instantiate(projectile, direction, rotation).GetComponent<BaseProjectile>();
-    
+        var projectileBehaviour = Instantiate(projectile, position, rotation).GetComponent<BaseProjectile>();
+
         projectileBehaviour.SetDirection(direction);
         projectileBehaviour.SetSpeed(projectileSpeed);
         projectileBehaviour.SetDamage(damage);
         projectileBehaviour.SetEnemyController(enemyController);
+        projectileBehaviour.SetMaximumRange(maximumRange);
     }
 }
