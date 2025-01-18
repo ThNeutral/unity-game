@@ -10,42 +10,37 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     private GameObject spawnerPrefab;
 
-    private Dictionary<GameObject, BaseSpawner> instantiatedSpawners = new();
+    private Dictionary<BaseSpawner, bool> instantiatedSpawners = new();
+
+    private TowerController towerController;
     // Start is called before the first frame update
     void Start()
     {
+        towerController = FindObjectOfType<TowerController>();
         PlaceSpawner(transform.position + new Vector3(10, 0, 8), transform.rotation);
-        PlaceSpawner(transform.position + new Vector3(8, 0, 10), transform.rotation);
-        PlaceSpawner(transform.position + new Vector3(6, 0, 10), transform.rotation);
-        PlaceSpawner(transform.position + new Vector3(10, 0, 6), transform.rotation);
+        //PlaceSpawner(transform.position + new Vector3(8, 0, 10), transform.rotation);
+        //PlaceSpawner(transform.position + new Vector3(6, 0, 10), transform.rotation);
+        //PlaceSpawner(transform.position + new Vector3(10, 0, 6), transform.rotation);
     }
 
     // Update is called once per frame
     void Update()
     {
-        foreach(var spawner in instantiatedSpawners.Values)
-        {
-            spawner.AddToCounter(Time.deltaTime);
-            if (spawner.IsReady())
-            {
-                spawner.SpawnEnemy();
-            }
-        }
     }
 
-    public Dictionary<GameObject, BaseEnemy> GetInstantiatedEnemies()
+    public Dictionary<BaseEnemy, bool> GetInstantiatedEnemies()
     {
-        IEnumerable<KeyValuePair<GameObject, BaseEnemy>> dict = new Dictionary<GameObject, BaseEnemy>();
-        foreach (var spawner in instantiatedSpawners.Values) 
+        IEnumerable<KeyValuePair<BaseEnemy, bool>> dict = new Dictionary<BaseEnemy, bool>();
+        foreach (var spawner in instantiatedSpawners.Keys) 
         {
             dict = dict.Concat(spawner.GetInstantiatedEnemies());
         }
         return dict.ToDictionary(group => group.Key, group => group.Value);
     }
 
-    public GameObject GetClosestEnemy(Vector3 point) {
+    public BaseEnemy GetClosestEnemy(Vector3 point) {
         float minDistance = float.MaxValue;
-        GameObject closestEnemy = null;
+        BaseEnemy closestEnemy = null;
         
         foreach (var enemy in GetInstantiatedEnemies().Keys)
         {
@@ -60,9 +55,21 @@ public class EnemyController : MonoBehaviour
         return closestEnemy;
     }
 
-    public void DealDamageTo(GameObject enemy, int damage)
+    public BaseTower GetTarget(BaseEnemy enemy)
     {
-        foreach (var spawner in instantiatedSpawners.Values)
+        var values = towerController.GetInstantiatedTowers().Keys.ToList();
+        return values[UnityEngine.Random.Range(0, values.Count)];
+    }
+
+    public bool IsValidTarget(BaseEnemy enemy, BaseTower target)
+    {
+        var values = towerController.GetInstantiatedTowers().Values.ToList();
+        return values.Contains(target);
+    }
+
+    public void DealDamageTo(BaseEnemy enemy, int damage)
+    {
+        foreach (var spawner in instantiatedSpawners.Keys)
         {
             if (spawner.Contains(enemy))
             {
@@ -77,11 +84,12 @@ public class EnemyController : MonoBehaviour
         return PlaceSpawner(spawnerPrefab, position, rotation);
     }
 
-    private GameObject PlaceSpawner(GameObject spawnerPrefab, Vector3 position, Quaternion rotation)
+    public GameObject PlaceSpawner(GameObject spawnerPrefab, Vector3 position, Quaternion rotation)
     {
         var spawner = Instantiate(spawnerPrefab, position, rotation);
-        var behavior = spawner.GetComponentInChildren<BaseSpawner>();
-        instantiatedSpawners[spawner] = behavior;
+        var behaviour = spawner.GetComponentInChildren<BaseSpawner>();
+        behaviour.SetEnemyController(this);
+        instantiatedSpawners[behaviour] = true;
         return spawner;
     }
 }

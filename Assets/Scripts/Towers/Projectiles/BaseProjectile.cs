@@ -30,9 +30,9 @@ public class BaseProjectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.TryGetComponent<BaseEnemy>(out var _))
+        if (other.gameObject.TryGetComponent<BaseEnemy>(out var enemy))
         {
-            enemyController.DealDamageTo(other.gameObject, damage);
+            enemyController.DealDamageTo(enemy, damage);
             Destroy(gameObject);
         }
     }

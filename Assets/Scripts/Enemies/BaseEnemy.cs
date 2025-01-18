@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour
@@ -10,16 +11,23 @@ public class BaseEnemy : MonoBehaviour
     [SerializeField]
     private float speed = 2;
 
+    [SerializeField]
+    private Rigidbody rb;
+
     private Vector3 moveDirection;
+    private BaseTower target;
+    private EnemyController enemyController;
     // Start is called before the first frame update
     void Start()
     {
-        moveDirection = (new Vector3(-10, 0, -10) - transform.position).normalized;
+        target = enemyController.GetTarget(this);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (enemyController.IsValidTarget(this, target)) target = enemyController.GetTarget(this);
+        moveDirection = (target.transform.position - transform.position).normalized;
         transform.position += speed * Time.deltaTime * moveDirection;
     }
 
@@ -40,5 +48,9 @@ public class BaseEnemy : MonoBehaviour
     public float GetSpeed()
     {
         return speed;
+    }
+    public void SetEnemyController(EnemyController controller)
+    {
+        enemyController = controller;
     }
 }

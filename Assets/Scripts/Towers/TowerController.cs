@@ -11,7 +11,7 @@ public class TowerController : MonoBehaviour
 
     private EnemyController enemyController;
 
-    private Dictionary<GameObject, BaseTower> instantiatedTowers = new();
+    private Dictionary<BaseTower, bool> instantiatedTowers = new();
 
     private IAimingStrategy aimingStrategy;
     private Dictionary<BaseTower, List<BaseEnemy>> targets = new();
@@ -20,8 +20,8 @@ public class TowerController : MonoBehaviour
     {
         enemyController = FindObjectOfType<EnemyController>();
         aimingStrategy = new ClosestAimingStrategy();
-        PlaceTower(transform.position + new Vector3(-10, 0, -8), transform.rotation);
-        PlaceTower(transform.position + new Vector3(-8, 0, -10), transform.rotation);
+        PlaceTower(transform.position + new Vector3(-10, 0, -10), transform.rotation);
+        //PlaceTower(transform.position + new Vector3(-8, 0, -10), transform.rotation);
     }
 
     // Update is called once per frame
@@ -31,6 +31,10 @@ public class TowerController : MonoBehaviour
         {
             targets = aimingStrategy.GetTargets(instantiatedTowers, enemyController.GetInstantiatedEnemies());
         }
+    }
+    public Dictionary<BaseTower, bool> GetInstantiatedTowers()
+    {
+        return instantiatedTowers;
     }
     public BaseEnemy GetTarget(BaseTower tower)
     {
@@ -67,7 +71,7 @@ public class TowerController : MonoBehaviour
         var behaviour = tower.GetComponentInChildren<BaseTower>();
         behaviour.SetEnemyController(enemyController);
         behaviour.SetTowerController(this);
-        instantiatedTowers[tower] = behaviour;
+        instantiatedTowers[behaviour] = true;
         return tower;
     }
 }
