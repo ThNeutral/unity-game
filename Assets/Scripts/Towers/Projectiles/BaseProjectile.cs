@@ -33,8 +33,8 @@ public class BaseProjectile : MonoBehaviour
         if (other.gameObject.TryGetComponent<BaseEnemy>(out var enemy))
         {
             enemyController.DealDamageTo(enemy, damage);
-            Destroy(gameObject);
         }
+        Destroy(gameObject);
     }
     public void SetSpeed(float s)
     {
