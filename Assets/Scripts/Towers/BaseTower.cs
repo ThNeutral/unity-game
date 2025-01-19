@@ -71,7 +71,7 @@ public class BaseTower : MonoBehaviour
         var zRotation = Random.Range(-dispersionAngle / 2, dispersionAngle / 2);
 
         var direction = Quaternion.Euler(xRotation, yRotation, zRotation) * (enemyFuturePosition - selfPosition).normalized;
-        var position = transform.position + direction * 0.5f;
+        var position = transform.position + direction * 0.75f;
         var rotation = Quaternion.LookRotation(direction);
 
         var projectileBehaviour = Instantiate(projectile, position, rotation).GetComponent<BaseProjectile>();
