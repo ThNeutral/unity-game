@@ -74,4 +74,17 @@ public class TowerController : MonoBehaviour
         instantiatedTowers[behaviour] = true;
         return tower;
     }
+
+    public bool DealDamage(BaseTower tower, int damage) {
+        if (instantiatedTowers.ContainsKey(tower))
+        {
+            var isDestroyed = tower.RecieveDamage(damage);
+            if (isDestroyed)
+            {
+                instantiatedTowers.Remove(tower);
+                return true;
+            }
+        }
+        return false;
+    }
 }

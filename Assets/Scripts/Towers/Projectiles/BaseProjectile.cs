@@ -5,21 +5,21 @@ using UnityEngine;
 
 public class BaseProjectile : MonoBehaviour
 {
-    private Vector3 direction;
-    private float speed;
-    private int damage;
-    private EnemyController enemyController;
-    private float maximumRange;
+    protected Vector3 direction;
+    protected float speed;
+    protected int damage;
+    protected EnemyController enemyController;
+    protected float maximumRange;
 
-    private Vector3 startingPosition;
+    protected Vector3 startingPosition;
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
         startingPosition = transform.position;
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
         transform.position += speed * Time.deltaTime * direction;
         if (Vector3.Distance(startingPosition, transform.position) > maximumRange)
@@ -28,7 +28,7 @@ public class BaseProjectile : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.TryGetComponent<BaseProjectile>(out var _)) return;
 

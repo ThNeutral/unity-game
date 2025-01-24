@@ -124,7 +124,7 @@ MonoBehaviour:
   spawnExclusionZone:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0.75, y: 0, z: 0.75}
-  spawnDelay: 0.01
+  spawnDelay: 0.1
   enemy: {fileID: 3453273901117452659, guid: 0bcc13de17c0c514d9e0eddb45ba2677, type: 3}
 --- !u!1 &6733951590039932377
 GameObject:
@@ -136,7 +136,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9035644166173442206}
   m_Layer: 0
-  m_Name: Spawner
+  m_Name: BaseSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

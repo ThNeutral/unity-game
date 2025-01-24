@@ -6,32 +6,37 @@ using UnityEngine;
 public class BaseEnemy : MonoBehaviour
 {
     [SerializeField]
-    private int health = 1;
+    protected int health = 1;
 
     [SerializeField]
-    private float speed = 2;
+    protected float speed = 2;
 
     [SerializeField]
-    private Rigidbody rb;
+    protected int damage = 1;
 
-    private Vector3 moveDirection;
-    private BaseTower target;
-    private EnemyController enemyController;
+    [SerializeField]
+    protected Rigidbody rb;
+
+    protected Vector3 moveDirection;
+    protected BaseTower target;
+    protected EnemyController enemyController;
+    protected TowerController towerController;
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         target = enemyController.GetTarget(this);
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (enemyController.IsValidTarget(this, target)) target = enemyController.GetTarget(this);
+        if (!enemyController.IsValidTarget(this, target)) target = enemyController.GetTarget(this);
+        if (target == null) return;
+
         moveDirection = (target.transform.position - transform.position).normalized;
         transform.position += speed * Time.deltaTime * moveDirection;
     }
-
-    public bool DealDamage(int damage)
+    public virtual bool RecieveDamage(int damage)
     {
         health -= damage;
         if (health <= 0) 
@@ -52,5 +57,9 @@ public class BaseEnemy : MonoBehaviour
     public void SetEnemyController(EnemyController controller)
     {
         enemyController = controller;
+    }
+    public void SetTowerController(TowerController controller)
+    {
+        towerController = controller;
     }
 }

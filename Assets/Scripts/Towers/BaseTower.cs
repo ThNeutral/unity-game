@@ -5,33 +5,36 @@ using UnityEngine;
 public class BaseTower : MonoBehaviour
 {
     [SerializeField]
-    private GameObject projectile;
+    protected GameObject projectile;
 
     [SerializeField]
-    private float projectileSpeed = 10;
+    protected float projectileSpeed = 10;
 
     [SerializeField]
-    private float shootSpeed = 0.02f;
+    protected float shootSpeed = 0.02f;
 
     [SerializeField]
-    private int damage = 1;
+    protected int damage = 1;
 
     [SerializeField]
-    private float maximumRange = 30f;
+    protected float maximumRange = 30f;
 
     [SerializeField]
-    private float dispersionAngle = 10f;
+    protected float dispersionAngle = 10f;
 
-    private float counter;
+    [SerializeField]
+    protected int health = 1;
 
-    private EnemyController enemyController;
-    private TowerController towerController;
+    protected float counter;
+
+    protected EnemyController enemyController;
+    protected TowerController towerController;
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         
     }
-    void Update()
+    private void Update()
     {
         counter += Time.deltaTime;
         while (counter > shootSpeed)
@@ -46,14 +49,6 @@ public class BaseTower : MonoBehaviour
                 counter = 0;
             }
         }
-    }
-    public void SetEnemyController(EnemyController controller) 
-    {
-        enemyController = controller;
-    }
-    public void SetTowerController(TowerController controller)
-    {
-        towerController = controller;
     }
     public void ShootAt(BaseEnemy enemyBehaviour)
     {
@@ -81,5 +76,24 @@ public class BaseTower : MonoBehaviour
         projectileBehaviour.SetDamage(damage);
         projectileBehaviour.SetEnemyController(enemyController);
         projectileBehaviour.SetMaximumRange(maximumRange);
+    }
+    public bool RecieveDamage(int damage)
+    {
+        health -= damage;
+
+        if (health <= 0) {
+            Destroy(gameObject);
+            return true;
+        }
+        
+        return false;
+    }
+    public void SetEnemyController(EnemyController controller)
+    {
+        enemyController = controller;
+    }
+    public void SetTowerController(TowerController controller)
+    {
+        towerController = controller;
     }
 }

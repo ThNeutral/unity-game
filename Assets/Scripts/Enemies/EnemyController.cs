@@ -17,7 +17,7 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         towerController = FindObjectOfType<TowerController>();
-        PlaceSpawner(transform.position + new Vector3(6, 0, 6), transform.rotation);
+        PlaceSpawner(transform.position + new Vector3(0, 0, 0), transform.rotation);
         //PlaceSpawner(transform.position + new Vector3(8, 0, 10), transform.rotation);
         //PlaceSpawner(transform.position + new Vector3(6, 0, 10), transform.rotation);
         //PlaceSpawner(transform.position + new Vector3(10, 0, 6), transform.rotation);
@@ -67,6 +67,11 @@ public class EnemyController : MonoBehaviour
         return values.Contains(target);
     }
 
+    public int TargetsCount()
+    {
+        return towerController.GetInstantiatedTowers().Count;
+    }
+
     public void DealDamageTo(BaseEnemy enemy, int damage)
     {
         foreach (var spawner in instantiatedSpawners.Keys)
@@ -89,6 +94,7 @@ public class EnemyController : MonoBehaviour
         var spawner = Instantiate(spawnerPrefab, position, rotation);
         var behaviour = spawner.GetComponentInChildren<BaseSpawner>();
         behaviour.SetEnemyController(this);
+        behaviour.SetTowerController(towerController);
         instantiatedSpawners[behaviour] = true;
         return spawner;
     }

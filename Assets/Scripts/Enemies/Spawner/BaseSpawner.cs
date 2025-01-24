@@ -7,23 +7,24 @@ using UnityEngine.Assertions;
 public class BaseSpawner : MonoBehaviour
 {
     [SerializeField]
-    private Bounds spawnZone;
+    protected Bounds spawnZone;
     [SerializeField] 
-    private Bounds spawnExclusionZone;
+    protected Bounds spawnExclusionZone;
     [SerializeField]
-    private float spawnDelay = 0.2f;
+    protected float spawnDelay = 0.2f;
     [SerializeField]
-    private GameObject enemy;
+    protected GameObject enemy;
 
-    private EnemyController enemyController;
-    private Dictionary<BaseEnemy, bool> instantiatedEnemies = new();
-    private float counter = 0f;
+    protected EnemyController enemyController;
+    protected TowerController towerController;
+    protected Dictionary<BaseEnemy, bool> instantiatedEnemies = new();
+    protected float counter = 0f;
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
     }
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         counter += Time.deltaTime;
         while (counter > spawnDelay) 
@@ -58,9 +59,10 @@ public class BaseSpawner : MonoBehaviour
         var cloneRotation = Quaternion.Euler(0, 0, 0);
 
         var instantiatedEnemy = Instantiate(enemy, clonePosition, cloneRotation);
-        var behavoiur = instantiatedEnemy.GetComponent<BaseEnemy>();
+        var behavoiur = instantiatedEnemy.GetComponentInChildren<BaseEnemy>();
 
         behavoiur.SetEnemyController(enemyController);
+        behavoiur.SetTowerController(towerController);
 
         instantiatedEnemies[behavoiur] = true;
 
@@ -78,7 +80,7 @@ public class BaseSpawner : MonoBehaviour
     {
         if (instantiatedEnemies.ContainsKey(enemy))
         {
-            var isDestroyed = enemy.DealDamage(damage);
+            var isDestroyed = enemy.RecieveDamage(damage);
             if (isDestroyed) 
             { 
                 instantiatedEnemies.Remove(enemy);
@@ -88,5 +90,9 @@ public class BaseSpawner : MonoBehaviour
     public void SetEnemyController(EnemyController controller)
     {
         enemyController = controller;
+    }
+    public void SetTowerController(TowerController controller)
+    {
+        towerController = controller;
     }
 }
