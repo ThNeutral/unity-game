@@ -11,13 +11,16 @@ public class BaseTower : MonoBehaviour
     private float projectileSpeed = 10;
 
     [SerializeField]
-    private float shootSpeed = 0.1f;
+    private float shootSpeed = 0.02f;
 
     [SerializeField]
     private int damage = 1;
 
     [SerializeField]
     private float maximumRange = 30f;
+
+    [SerializeField]
+    private float dispersionAngle = 10f;
 
     private float counter;
 
@@ -31,12 +34,15 @@ public class BaseTower : MonoBehaviour
     void Update()
     {
         counter += Time.deltaTime;
-        if (counter > shootSpeed) 
+        while (counter > shootSpeed)
         {
             var target = towerController.GetTarget(this);
             if (target != null)
             {
                 ShootAt(target);
+                counter -= shootSpeed;
+            } else
+            {
                 counter = 0;
             }
         }
@@ -60,8 +66,12 @@ public class BaseTower : MonoBehaviour
 
         var enemyFuturePosition = enemyPosition + enemySpeed * estimatedFlightTime * enemyMoveDirection;
 
-        var direction = (enemyFuturePosition - selfPosition).normalized;
-        var position = transform.position + direction * 0.5f;
+        var xRotation = Random.Range(-dispersionAngle / 2, dispersionAngle / 2);
+        var yRotation = Random.Range(-dispersionAngle / 2, dispersionAngle / 2);
+        var zRotation = Random.Range(-dispersionAngle / 2, dispersionAngle / 2);
+
+        var direction = Quaternion.Euler(xRotation, yRotation, zRotation) * (enemyFuturePosition - selfPosition).normalized;
+        var position = transform.position + direction * 0.75f;
         var rotation = Quaternion.LookRotation(direction);
 
         var projectileBehaviour = Instantiate(projectile, position, rotation).GetComponent<BaseProjectile>();

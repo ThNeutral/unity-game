@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IAimingStrategy
 {
-    Dictionary<BaseTower, List<BaseEnemy>> GetTargets(Dictionary<GameObject, BaseTower> towers, Dictionary<GameObject, BaseEnemy> enemies);
+    Dictionary<BaseTower, List<BaseEnemy>> GetTargets(Dictionary<BaseTower, bool> towers, Dictionary<BaseEnemy, bool> enemies);
 }

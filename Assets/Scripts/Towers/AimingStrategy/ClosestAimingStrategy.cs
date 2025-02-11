@@ -1,24 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ClosestAimingStrategy : IAimingStrategy
 {
-    public Dictionary<BaseTower, List<BaseEnemy>> GetTargets(Dictionary<GameObject, BaseTower> towers, Dictionary<GameObject, BaseEnemy> enemies)
+    public Dictionary<BaseTower, List<BaseEnemy>> GetTargets(Dictionary<BaseTower, bool> towers, Dictionary<BaseEnemy, bool> enemies)
     {
         Dictionary<BaseTower, List<BaseEnemy>> towerAssignments = new();
 
-        foreach (var tower in towers.Values)
+        foreach (var tower in towers.Keys)
         {
             towerAssignments[tower] = new List<BaseEnemy>();
         }
 
-        foreach (var enemy in enemies.Values)
+        foreach (var enemy in enemies.Keys)
         {
             BaseTower bestTower = null;
             float bestDistance = float.MaxValue;
 
-            foreach (var tower in towers.Values)
+            foreach (var tower in towers.Keys)
             {
                 float distance = Vector3.Distance(tower.transform.position, enemy.transform.position);
 

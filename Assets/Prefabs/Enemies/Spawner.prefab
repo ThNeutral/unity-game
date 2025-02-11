@@ -118,8 +118,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d9986e9a1ab681409f0490170030209, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnSize: {x: 3, y: 0.25, z: 3}
-  spawnDelay: 0.2
+  spawnZone:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 5, y: 0, z: 5}
+  spawnExclusionZone:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.75, y: 0, z: 0.75}
+  spawnDelay: 0.01
   enemy: {fileID: 3453273901117452659, guid: 0bcc13de17c0c514d9e0eddb45ba2677, type: 3}
 --- !u!1 &6733951590039932377
 GameObject:

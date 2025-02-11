@@ -30,11 +30,13 @@ public class BaseProjectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.TryGetComponent<BaseEnemy>(out var _))
+        if (other.gameObject.TryGetComponent<BaseProjectile>(out var _)) return;
+
+        if (other.gameObject.TryGetComponent<BaseEnemy>(out var enemy))
         {
-            enemyController.DealDamageTo(other.gameObject, damage);
-            Destroy(gameObject);
+            enemyController.DealDamageTo(enemy, damage);
         }
+        Destroy(gameObject);
     }
     public void SetSpeed(float s)
     {
