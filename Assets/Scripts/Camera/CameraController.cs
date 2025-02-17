@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    private float spawnTowerCooldown = 0f;
-    private float spawnSpawnerCooldown = 0f;
+    private float test_crystalCooldown = 0f;
+
+    [SerializeField]
+    private GameObject crystalController;
 
     private Camera _camera;
     private TowerController _towerController;
@@ -21,43 +23,22 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleCreateSpawner();
-        HandleCreateTower();
+        test_HandleCreateCrystal();
     }
-
-    private void HandleCreateTower()
+    
+    private void test_HandleCreateCrystal()
     {
-        if ((Input.GetAxis("Fire1") == 1) && (spawnTowerCooldown > 1f))
+        if (test_crystalCooldown >= 0.5f && Input.GetButtonUp("Fire1"))
         {
-            var origin = transform.position;
-            var direction = transform.forward;
-            if (Physics.Raycast(origin, direction, out var hitInfo))
+            if (Physics.Raycast(transform.position, _camera.transform.forward, out var hit))
             {
-                spawnTowerCooldown = 0;
-                _towerController.PlaceTower(hitInfo.point, Quaternion.LookRotation(hitInfo.transform.forward));
-            };
+                Instantiate(crystalController, hit.point, Quaternion.identity);
+            }
+            test_crystalCooldown = 0;
         }
         else
         {
-            spawnTowerCooldown += Time.deltaTime;
-        }
-    }
-
-    private void HandleCreateSpawner()
-    {
-        if ((Input.GetAxis("Fire2") == 1) && (spawnSpawnerCooldown > 1f))
-        {
-            var origin = transform.position;
-            var direction = transform.forward;
-            if (Physics.Raycast(origin, direction, out var hitInfo))
-            {
-                spawnSpawnerCooldown = 0;
-                _enemyController.PlaceSpawner(hitInfo.point, Quaternion.LookRotation(hitInfo.transform.forward));
-            };
-        }
-        else
-        {
-            spawnSpawnerCooldown += Time.deltaTime;
+            test_crystalCooldown += Time.deltaTime;
         }
     }
 }
