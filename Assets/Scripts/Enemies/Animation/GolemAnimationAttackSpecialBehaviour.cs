@@ -23,7 +23,7 @@ public class GolemAnimationAttackSpecialBehaviour : StateMachineBehaviour
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         isInAnimation = false;
-        animator.GetComponentInChildren<GolemBehaviour>().SetIsInSpecialAttack(false);
+        animator.GetComponentInChildren<GolemBehaviour>().EndSpecialAttack();
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -34,7 +34,7 @@ public class GolemAnimationAttackSpecialBehaviour : StateMachineBehaviour
             {
                 if (counter > length * 0.3)
                 {
-                    animator.GetComponentInChildren<GolemBehaviour>().SetIsInSpecialAttack(true);
+                    animator.GetComponentInChildren<GolemBehaviour>().StartSpecialAttack();
                     attackState = AttackStates.HAPPENING;
                     counter = 0;
                 }
@@ -43,7 +43,7 @@ public class GolemAnimationAttackSpecialBehaviour : StateMachineBehaviour
             {
                 if (counter > length * 0.2)
                 {
-                    animator.GetComponentInChildren<GolemBehaviour>().SetIsInSpecialAttack(true);
+                    animator.GetComponentInChildren<GolemBehaviour>().EndSpecialAttack();
                     attackState = AttackStates.FINISHED;
                 }
             }

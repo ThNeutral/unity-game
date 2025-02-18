@@ -39,12 +39,16 @@ public class CrystalBehaviour : MonoBehaviour
     [SerializeField]
     private float spawnOffset = 0.5f;
 
+    private int damage = 3;
+    private HashSet<BaseTower> touchedTowers;
+
     private AnimationState animationState = AnimationState.RAISE;
 
     private List<GameObject> instantiatedCrystals;
     // Start is called before the first frame update
     void Start()
     {
+        touchedTowers = new();
         crystalRenderer = crystalPrefab.GetComponentInChildren<Renderer>();
         
         instantiatedCrystals = new(numberOfCrystals);
@@ -167,5 +171,9 @@ public class CrystalBehaviour : MonoBehaviour
             if (crystal == null) continue;
             crystal.transform.position -= moveAmount * crystal.transform.up;
         }
+    }
+    public void SetDamage(int damage)
+    {
+        this.damage = damage;
     }
 }

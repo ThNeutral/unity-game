@@ -10,9 +10,16 @@ public class GolemBehaviour : BaseEnemy
 
     [SerializeField]
     private float normalAttackDelay = 2f;
-
     [SerializeField]
     private float specialAttackDelay = 5f;
+
+    [SerializeField]
+    private GameObject crystalController;
+
+    [SerializeField]
+    private int specialAttackDamage = 3;
+    [SerializeField]
+    private int normalAttackDamage = 1;
 
     private float normalAttackCounter = 0f;
     private float specialAttackCounter = 0f;
@@ -21,7 +28,6 @@ public class GolemBehaviour : BaseEnemy
     private bool isInSpecialAttack;
 
     private Dictionary<BaseTower, bool> touchedTowersByNormalAttack = new();
-    private Dictionary<BaseTower, bool> touchedTowersBySpecialAttack = new();
     // Start is called before the first frame update
     private void Start()
     {
@@ -43,16 +49,10 @@ public class GolemBehaviour : BaseEnemy
 
         if (behaviour != null)
         {
-            if (isInSpecialAttack)
-            {
-                if (touchedTowersBySpecialAttack.TryGetValue(behaviour, out var _)) return;
-                towerController.DealDamage(behaviour, 3);
-                touchedTowersBySpecialAttack.Add(behaviour, true);
-
-            } else if (isInAttack)
+            if (isInAttack)
             {
                 if (touchedTowersByNormalAttack.TryGetValue(behaviour, out var _)) return;
-                towerController.DealDamage(behaviour, 1);
+                towerController.DealDamage(behaviour, normalAttackDamage);
                 touchedTowersByNormalAttack.Add(behaviour, true);
             }
         }
@@ -96,6 +96,20 @@ public class GolemBehaviour : BaseEnemy
             }
         }
     }
+    public void StartSpecialAttack()
+    {
+        isInSpecialAttack = true;
+        Debug.DrawRay(transform.position + 1.5f * transform.forward + 2 * transform.up, -4 * transform.up, Color.red, float.PositiveInfinity);
+        if (Physics.Raycast(transform.position + 1.5f * transform.forward + 2 * transform.up, -4 * transform.up, out var hitInfo))
+        {
+            Instantiate(crystalController, hitInfo.point + 1 * hitInfo.transform.up, Quaternion.LookRotation(hitInfo.transform.forward));
+        }
+    }
+
+    public void EndSpecialAttack()
+    {
+        isInSpecialAttack = false;
+    }
 
     public override bool RecieveDamage(int damage)
     {
@@ -113,11 +127,5 @@ public class GolemBehaviour : BaseEnemy
     {
         if (b) touchedTowersByNormalAttack = new();
         isInAttack = b;
-    }
-
-    public void SetIsInSpecialAttack(bool b)
-    {
-        if (b) touchedTowersBySpecialAttack = new();
-        isInSpecialAttack = b;
     }
 }

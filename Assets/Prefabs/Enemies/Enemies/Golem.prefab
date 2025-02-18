@@ -125,6 +125,9 @@ MonoBehaviour:
   animator: {fileID: 1698020023785212611}
   normalAttackDelay: 2
   specialAttackDelay: 5
+  crystalController: {fileID: 3531546220342452252, guid: 52341d5cd21efa0429f6eba3029e9e8f, type: 3}
+  specialAttackDamage: 3
+  normalAttackDamage: 1
 --- !u!65 &7616462631064298523
 BoxCollider:
   m_ObjectHideFlags: 0
