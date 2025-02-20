@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3462029235018481298}
   - component: {fileID: 1113338422132654433}
   - component: {fileID: 5634164319248179201}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31e82170691a31649a4ab4178ab4589b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -126,6 +126,9 @@ MonoBehaviour:
   damage: 1
   maximumRange: 30
   dispersionAngle: 10
+  meshRenderer: {fileID: 3462029235018481298}
+  opaqueMaterial: {fileID: 2100000, guid: 31e82170691a31649a4ab4178ab4589b, type: 2}
+  transparentMaterial: {fileID: 2100000, guid: 367ac8d30d8f43c46992bcca30b21fe9, type: 2}
 --- !u!1 &7529903575479447684
 GameObject:
   m_ObjectHideFlags: 0
@@ -135,7 +138,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7885387969058112604}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Tower
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -11,9 +11,6 @@ public class BaseEnemy : MonoBehaviour
     [SerializeField]
     private float speed = 2;
 
-    [SerializeField]
-    private Rigidbody rb;
-
     private Vector3 moveDirection;
     private BaseTower target;
     private EnemyController enemyController;

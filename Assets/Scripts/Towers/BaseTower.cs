@@ -26,13 +26,35 @@ public class BaseTower : MonoBehaviour
 
     private EnemyController enemyController;
     private TowerController towerController;
+
+    private bool isGhost;
+
+    [SerializeField]
+    private MeshRenderer meshRenderer;
+
+    [SerializeField]
+    private Material opaqueMaterial;
+    [SerializeField]
+    private Material transparentMaterial;
     // Start is called before the first frame update
     void Start()
     {
-        
+        var materialsCopy = meshRenderer.materials;
+        if (isGhost)
+        {
+            materialsCopy[0] = transparentMaterial;
+        }
+        else
+        {
+            materialsCopy[0] = opaqueMaterial;
+        }
+
+        meshRenderer.materials = materialsCopy;
     }
     void Update()
     {
+        if (isGhost) return;
+
         counter += Time.deltaTime;
         while (counter > shootSpeed)
         {
@@ -81,5 +103,10 @@ public class BaseTower : MonoBehaviour
         projectileBehaviour.SetDamage(damage);
         projectileBehaviour.SetEnemyController(enemyController);
         projectileBehaviour.SetMaximumRange(maximumRange);
+    }
+
+    public void SetIsGhost(bool val)
+    {
+        isGhost = val;
     }
 }

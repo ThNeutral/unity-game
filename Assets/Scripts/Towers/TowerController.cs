@@ -15,6 +15,8 @@ public class TowerController : MonoBehaviour
 
     private IAimingStrategy aimingStrategy;
     private Dictionary<BaseTower, List<BaseEnemy>> targets = new();
+
+    private GameObject ghostTower;
     // Start is called before the first frame update
     void Start() 
     {
@@ -73,5 +75,43 @@ public class TowerController : MonoBehaviour
         behaviour.SetTowerController(this);
         instantiatedTowers[behaviour] = true;
         return tower;
+    }
+    public void CreateGhostTower(Vector3 position, Quaternion rotation)
+    {
+        if (ghostTower != null) 
+        {
+            Debug.LogError("Called CreateGhostTower when ghost tower is already instantiated");
+            return; 
+        }
+        ghostTower = Instantiate(towerPrefab, position, rotation);
+        ghostTower.GetComponentInChildren<BaseTower>().SetIsGhost(true);
+    }
+    public void MoveGhostTower(Vector3 position)
+    {
+        if (ghostTower == null)
+        {
+            Debug.LogError("Called MoveGhostTower when ghost tower is not instantiated");
+            return;
+        }
+        ghostTower.transform.position = position;
+    }
+    public void RotateGhostTower(Quaternion rotation)
+    {
+        if (ghostTower == null)
+        {
+            Debug.LogError("Called RotateGhostTower when ghost tower is not instantiated");
+            return;
+        }
+        ghostTower.transform.rotation = rotation;
+    }
+    public void DestroyGhostTower()
+    {
+        if (ghostTower == null)
+        {
+            Debug.LogError("Called DestroyGhostTower when ghost tower is not instantiated");
+            return;
+        }
+        Destroy(ghostTower);
+        ghostTower = null;
     }
 }
