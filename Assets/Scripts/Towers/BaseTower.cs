@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class BaseTower : MonoBehaviour
 {
+    public enum MaterialState
+    {
+        OPAQUE,
+        VALID,
+        INVALID
+    }
+
     [SerializeField]
     private GameObject projectile;
 
@@ -35,26 +42,53 @@ public class BaseTower : MonoBehaviour
     [SerializeField]
     private Material opaqueMaterial;
     [SerializeField]
-    private Material transparentMaterial;
+    private Material validTransparentMaterial;
+    [SerializeField]
+    private Material invalidTransparentMaterial;
+
+    private MaterialState materialState = MaterialState.OPAQUE;
+    private MaterialState targetMaterialState = MaterialState.OPAQUE;
     // Start is called before the first frame update
     void Start()
     {
-        var materialsCopy = meshRenderer.materials;
+        SwitchMaterial(opaqueMaterial);
         if (isGhost)
         {
-            materialsCopy[0] = transparentMaterial;
+            materialState = MaterialState.VALID;
+            targetMaterialState = MaterialState.VALID;
+            SwitchMaterial(validTransparentMaterial);
+            gameObject.GetComponent<CapsuleCollider>().enabled = false;
         }
-        else
-        {
-            materialsCopy[0] = opaqueMaterial;
-        }
-
-        meshRenderer.materials = materialsCopy;
     }
     void Update()
     {
-        if (isGhost) return;
-
+        if (isGhost) 
+        {
+            HandleGhostTower();
+        }
+        else
+        {
+            HandleLivingTower();
+        }
+    }
+    private void HandleGhostTower()
+    {
+        if (targetMaterialState != materialState)
+        {
+            if (targetMaterialState == MaterialState.VALID)
+            {
+                SwitchMaterial(validTransparentMaterial);
+                materialState = MaterialState.VALID;
+            }
+            else
+            {
+                SwitchMaterial(invalidTransparentMaterial);
+                materialState = MaterialState.INVALID;
+            }
+        }
+    }
+    private void HandleLivingTower()
+    {
         counter += Time.deltaTime;
         while (counter > shootSpeed)
         {
@@ -63,7 +97,8 @@ public class BaseTower : MonoBehaviour
             {
                 ShootAt(target);
                 counter -= shootSpeed;
-            } else
+            }
+            else
             {
                 counter = 0;
             }
@@ -108,5 +143,15 @@ public class BaseTower : MonoBehaviour
     public void SetIsGhost(bool val)
     {
         isGhost = val;
+    }
+    public void SetTargetMaterial(MaterialState ms)
+    {
+        targetMaterialState = ms;
+    }
+    private void SwitchMaterial(Material material)
+    {
+        var materialsCopy = meshRenderer.materials;
+        materialsCopy[0] = material;
+        meshRenderer.materials = materialsCopy;
     }
 }

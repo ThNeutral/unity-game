@@ -104,6 +104,15 @@ public class TowerController : MonoBehaviour
         }
         ghostTower.transform.rotation = rotation;
     }
+    public void SetGhostTowerMaterialState(BaseTower.MaterialState ms)
+    {
+        if (ghostTower == null)
+        {
+            Debug.LogError("Called SetGhostTowerMaterialState when ghost tower is not instantiated");
+            return;
+        }
+        ghostTower.GetComponentInChildren<BaseTower>().SetTargetMaterial(ms);
+    }
     public void DestroyGhostTower()
     {
         if (ghostTower == null)
