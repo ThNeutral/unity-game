@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BaseTower : MonoBehaviour
-{
+{ 
     [SerializeField]
     private GameObject projectile;
 
@@ -26,12 +26,16 @@ public class BaseTower : MonoBehaviour
 
     private EnemyController enemyController;
     private TowerController towerController;
+
     // Start is called before the first frame update
     void Start()
     {
-        
     }
     void Update()
+    {
+        HandleLivingTower();
+    }
+    private void HandleLivingTower()
     {
         counter += Time.deltaTime;
         while (counter > shootSpeed)
@@ -41,7 +45,8 @@ public class BaseTower : MonoBehaviour
             {
                 ShootAt(target);
                 counter -= shootSpeed;
-            } else
+            }
+            else
             {
                 counter = 0;
             }

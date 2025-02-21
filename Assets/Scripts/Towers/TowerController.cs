@@ -6,8 +6,7 @@ using UnityEngine.UI;
 
 public class TowerController : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject towerPrefab;
+    private TowersDataProvider towersDataProvider;
 
     private EnemyController enemyController;
 
@@ -15,12 +14,14 @@ public class TowerController : MonoBehaviour
 
     private IAimingStrategy aimingStrategy;
     private Dictionary<BaseTower, List<BaseEnemy>> targets = new();
+
     // Start is called before the first frame update
     void Start() 
     {
+        towersDataProvider = FindObjectOfType<TowersDataProvider>();
         enemyController = FindObjectOfType<EnemyController>();
         aimingStrategy = new ClosestAimingStrategy();
-        PlaceTower(transform.position + new Vector3(-10, 0, -10), transform.rotation);
+        PlaceTower(towersDataProvider.GetTowerDatas()[0].Tower, transform.position + new Vector3(-10, 0, -10), transform.rotation);
         //PlaceTower(transform.position + new Vector3(-8, 0, -10), transform.rotation);
     }
 
@@ -60,11 +61,6 @@ public class TowerController : MonoBehaviour
         
         return target;
     }
-    public GameObject PlaceTower(Vector3 position, Quaternion rotation)
-    {
-        return PlaceTower(towerPrefab, position, rotation);
-    }
-
     public GameObject PlaceTower(GameObject towerPrefab, Vector3 position, Quaternion rotation)
     {
         var tower = Instantiate(towerPrefab, position, rotation);

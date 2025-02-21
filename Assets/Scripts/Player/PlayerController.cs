@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
 
     public KeyCode jumpKey = KeyCode.Space;
 
+    private TowerController towerController;
+
     private void Start()
     {
         jumpready = true;
