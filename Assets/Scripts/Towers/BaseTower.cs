@@ -3,14 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BaseTower : MonoBehaviour
-{
-    public enum MaterialState
-    {
-        OPAQUE,
-        VALID,
-        INVALID
-    }
-
+{ 
     [SerializeField]
     private GameObject projectile;
 
@@ -34,58 +27,13 @@ public class BaseTower : MonoBehaviour
     private EnemyController enemyController;
     private TowerController towerController;
 
-    private bool isGhost;
-
-    [SerializeField]
-    private MeshRenderer meshRenderer;
-
-    [SerializeField]
-    private Material opaqueMaterial;
-    [SerializeField]
-    private Material validTransparentMaterial;
-    [SerializeField]
-    private Material invalidTransparentMaterial;
-
-    private MaterialState materialState = MaterialState.OPAQUE;
-    private MaterialState targetMaterialState = MaterialState.OPAQUE;
     // Start is called before the first frame update
     void Start()
     {
-        SwitchMaterial(opaqueMaterial);
-        if (isGhost)
-        {
-            materialState = MaterialState.VALID;
-            targetMaterialState = MaterialState.VALID;
-            SwitchMaterial(validTransparentMaterial);
-            gameObject.GetComponent<CapsuleCollider>().enabled = false;
-        }
     }
     void Update()
     {
-        if (isGhost) 
-        {
-            HandleGhostTower();
-        }
-        else
-        {
-            HandleLivingTower();
-        }
-    }
-    private void HandleGhostTower()
-    {
-        if (targetMaterialState != materialState)
-        {
-            if (targetMaterialState == MaterialState.VALID)
-            {
-                SwitchMaterial(validTransparentMaterial);
-                materialState = MaterialState.VALID;
-            }
-            else
-            {
-                SwitchMaterial(invalidTransparentMaterial);
-                materialState = MaterialState.INVALID;
-            }
-        }
+        HandleLivingTower();
     }
     private void HandleLivingTower()
     {
@@ -138,20 +86,5 @@ public class BaseTower : MonoBehaviour
         projectileBehaviour.SetDamage(damage);
         projectileBehaviour.SetEnemyController(enemyController);
         projectileBehaviour.SetMaximumRange(maximumRange);
-    }
-
-    public void SetIsGhost(bool val)
-    {
-        isGhost = val;
-    }
-    public void SetTargetMaterial(MaterialState ms)
-    {
-        targetMaterialState = ms;
-    }
-    private void SwitchMaterial(Material material)
-    {
-        var materialsCopy = meshRenderer.materials;
-        materialsCopy[0] = material;
-        meshRenderer.materials = materialsCopy;
     }
 }

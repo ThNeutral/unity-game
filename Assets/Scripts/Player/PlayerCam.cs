@@ -9,16 +9,6 @@ public class PlayerCam : MonoBehaviour
     private float xRotation;
     private float yRotation;
 
-    [SerializeField]
-    private Camera cam;
-
-    [SerializeField]
-    private float placementCooldown = 0.5f;
-    private float placementCounter = 0f;
-
-    [SerializeField]
-    private float maxTowerPlacementDistance = 10f;
-
     void Start()
     {
     }
