@@ -850,6 +850,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 41.889, y: -38.129, z: -0.655}
+--- !u!1 &793898530
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 793898532}
+  - component: {fileID: 793898531}
+  m_Layer: 0
+  m_Name: TowersDataProviders
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &793898531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793898530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a8342bc4367e864b98412d4f5906a10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  towerDatas:
+  - Tower: {fileID: 7529903575479447684, guid: 6bcc8cae5c10eb542b54ca6fe54ccae8, type: 3}
+    Ghost: {fileID: 7224265965007454024, guid: 3c589c850f398ca4a9da09e0664ae205, type: 3}
+  - Tower: {fileID: 7909411941833367118, guid: b2677f1d85e6f4143b089e2c6e36f331, type: 3}
+    Ghost: {fileID: 7909411941833367118, guid: e58babd5f1396c34f99b637961258f2c, type: 3}
+--- !u!4 &793898532
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793898530}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &857680338
 GameObject:
   m_ObjectHideFlags: 0
@@ -1152,7 +1201,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 963194227}
-  placementCooldown: 0.5
+  placementCooldown: 0.2
+  ghostCooldown: 0.5
   maxTowerPlacementDistance: 5
 --- !u!1 &1071497816
 GameObject:
@@ -1712,7 +1762,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 215b5639f79a67642a87138cb2d9e5e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerPrefab: {fileID: 7529903575479447684, guid: 6bcc8cae5c10eb542b54ca6fe54ccae8, type: 3}
 --- !u!4 &1815608569
 Transform:
   m_ObjectHideFlags: 0
@@ -1981,7 +2030,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc28745f3b7db1445b549236c56b70af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ghostTowerPrefab: {fileID: 7224265965007454024, guid: 3c589c850f398ca4a9da09e0664ae205, type: 3}
 --- !u!4 &2064251499
 Transform:
   m_ObjectHideFlags: 0
@@ -2012,3 +2060,4 @@ SceneRoots:
   - {fileID: 1815608569}
   - {fileID: 963194228}
   - {fileID: 2064251499}
+  - {fileID: 793898532}
