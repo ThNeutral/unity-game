@@ -11,6 +11,9 @@ public class BaseEnemy : MonoBehaviour
     [SerializeField]
     private float speed = 2;
 
+    [SerializeField]
+    private GameObject experiencePrefab;
+
     private Vector3 moveDirection;
     private BaseTower target;
     private EnemyController enemyController;
@@ -23,17 +26,17 @@ public class BaseEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enemyController.IsValidTarget(this, target)) target = enemyController.GetTarget(this);
+        if (!enemyController.IsValidTarget(this, target)) target = enemyController.GetTarget(this);
         moveDirection = (target.transform.position - transform.position).normalized;
         transform.position += speed * Time.deltaTime * moveDirection;
     }
-
     public bool DealDamage(int damage)
     {
         health -= damage;
         if (health <= 0) 
         {
             Destroy(gameObject);
+            Instantiate(experiencePrefab, transform.position, Quaternion.identity);
             return true;
         }
         return false;

@@ -55,7 +55,7 @@ public class BaseSpawner : MonoBehaviour
         } while (spawnExclusionZone.Contains(spawnPoint));
 
         var clonePosition = transform.position + spawnPoint;
-        var cloneRotation = Quaternion.Euler(0, 0, 0);
+        var cloneRotation = Quaternion.identity;
 
         var instantiatedEnemy = Instantiate(enemy, clonePosition, cloneRotation);
         var behavoiur = instantiatedEnemy.GetComponent<BaseEnemy>();
