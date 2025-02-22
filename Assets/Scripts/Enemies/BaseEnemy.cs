@@ -30,13 +30,13 @@ public class BaseEnemy : MonoBehaviour
         moveDirection = (target.transform.position - transform.position).normalized;
         transform.position += speed * Time.deltaTime * moveDirection;
     }
-    public bool DealDamage(int damage)
+    public bool DealDamage(int damage, BaseTower shooter)
     {
         health -= damage;
         if (health <= 0) 
         {
             Destroy(gameObject);
-            Instantiate(experiencePrefab, transform.position, Quaternion.identity);
+            Instantiate(experiencePrefab, transform.position, Quaternion.identity).GetComponentInChildren<Experience>().SetKilledBy(shooter);
             return true;
         }
         return false;

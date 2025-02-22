@@ -65,13 +65,13 @@ public class EnemyController : MonoBehaviour
         return values.Contains(target);
     }
 
-    public void DealDamageTo(BaseEnemy enemy, int damage)
+    public void DealDamageTo(BaseEnemy enemy, int damage, BaseTower shooter)
     {
         foreach (var spawner in instantiatedSpawners.Keys)
         {
             if (spawner.Contains(enemy))
             {
-                spawner.DealDamageToEnemy(enemy, damage);
+                spawner.DealDamageToEnemy(enemy, damage, shooter);
                 return;
             }
         }

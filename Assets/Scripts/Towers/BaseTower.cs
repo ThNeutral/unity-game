@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class BaseTower : MonoBehaviour
 { 
@@ -24,17 +25,36 @@ public class BaseTower : MonoBehaviour
 
     private float counter;
 
+    private int experience = 0;
+
+    private LootController lootController;
     private EnemyController enemyController;
     private TowerController towerController;
+
+    [SerializeField]
+    private TextMeshPro textMeshPro;
 
     // Start is called before the first frame update
     void Start()
     {
+        lootController = FindFirstObjectByType<LootController>();
     }
     void Update()
     {
         HandleLivingTower();
+        if (Input.GetKey(KeyCode.E))
+        {
+            HandleGiveExperience();
+        }
     }
+    private void HandleGiveExperience()
+    {
+        if (Vector3.Distance(FindFirstObjectByType<PlayerController>().transform.position, transform.position) >= 5) return;
+        lootController.AddExperience(experience);
+        experience = 0;
+        textMeshPro.text = "0";
+    }
+
     private void HandleLivingTower()
     {
         counter += Time.deltaTime;
@@ -59,6 +79,11 @@ public class BaseTower : MonoBehaviour
     public void SetTowerController(TowerController controller)
     {
         towerController = controller;
+    }
+    public void AddExperience(int experience)
+    {
+        this.experience += experience;
+        textMeshPro.text = this.experience.ToString();
     }
     public void ShootAt(BaseEnemy enemyBehaviour)
     {
@@ -86,5 +111,6 @@ public class BaseTower : MonoBehaviour
         projectileBehaviour.SetDamage(damage);
         projectileBehaviour.SetEnemyController(enemyController);
         projectileBehaviour.SetMaximumRange(maximumRange);
+        projectileBehaviour.SetShotBy(this);
     }
 }
