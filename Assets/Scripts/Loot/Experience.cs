@@ -26,20 +26,31 @@ public class Experience : MonoBehaviour
     }
     public void HandleCollect()
     {
-        if (lootController.modeOfCollection == LootController.ModeOfCollection.Instant)
+        switch (lootController.modeOfCollection)
         {
-            lootController.AddExperience(experience);
-        } else if (lootController.modeOfCollection == LootController.ModeOfCollection.ViaTower)
-        {
-            if (killedBy == null)
-            {
-                Debug.LogError("Mode of collection was LootController.ModeOfCollection.ViaTower but killedBy is null");
-            }
-            else
-            {
-                killedBy.AddExperience(experience);
-            }
+            case LootController.ModeOfCollection.Instant:
+                {
+                    lootController.AddExperience(experience);
+                    break;
+                }
+            case LootController.ModeOfCollection.OnPickUp: 
+                {
+                    lootController.AddExperience(experience);
+                    break;
+                }
+            case LootController.ModeOfCollection.ViaTower:
+                {
+                    if (killedBy == null)
+                    {
+                        Debug.LogError("Mode of collection was LootController.ModeOfCollection.ViaTower but killedBy is null");
+                        break;
+                    }
+
+                    killedBy.AddExperience(experience);
+                    break;
+                }
         }
+        
         Destroy(gameObject);
     }
     public void SetKilledBy(BaseTower tower)
