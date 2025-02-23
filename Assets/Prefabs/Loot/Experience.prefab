@@ -151,3 +151,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   experience: 1
+  unionBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 3, y: 3, z: 3}
