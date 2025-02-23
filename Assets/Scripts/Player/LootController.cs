@@ -20,6 +20,8 @@ public class LootController : MonoBehaviour
     private BuffChoiceHandler buffChoiceHandler;
 
     private List<int> buffList = new();
+
+    private bool isInChoice = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,14 +31,16 @@ public class LootController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (experience >= 10 && buffList.Count == 0)
+        if (experience >= 10 && !isInChoice && buffList.Count == 0)
         {
-            buffChoiceHandler.PresentBuffChoice();
+            isInChoice = true;
+            buffChoiceHandler.PresentBuffChoice(3);
         }
         
     }
     public void AddBuff(int buff)
     {
+        isInChoice = false;
         buffList.Add(buff);
     }
 

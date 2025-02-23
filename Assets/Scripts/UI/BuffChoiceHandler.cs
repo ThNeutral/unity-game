@@ -6,20 +6,15 @@ using UnityEngine.UI;
 public class BuffChoiceHandler : MonoBehaviour
 {
     [SerializeField]
-    private Button buff1Handler;
-
-    [SerializeField]
-    private Button buff2Handler;
+    private GameObject buffHandlerUIPrefab;
 
     private LootController lootController;
+
+    private List<GameObject> buttons = new();
     // Start is called before the first frame update
     void Start()
     {
         lootController = FindFirstObjectByType<LootController>();
-        buff1Handler.onClick.AddListener(() => HandleSelect(1));
-        buff2Handler.onClick.AddListener(() => HandleSelect(2));
-        buff1Handler.gameObject.SetActive(false); 
-        buff2Handler.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -28,12 +23,17 @@ public class BuffChoiceHandler : MonoBehaviour
         
     }
 
-    public void PresentBuffChoice()
+    public void PresentBuffChoice(int numOfBuffs)
     {
-        Time.timeScale = 0f;
-        buff1Handler.gameObject.SetActive(true);
-        buff2Handler.gameObject.SetActive(true);
+        for (int i = 0; i < numOfBuffs; i++)
+        {
+            var button = Instantiate(buffHandlerUIPrefab, transform.position - new Vector3(-200, 0, 0) * ((numOfBuffs - 1) / 2 - i), Quaternion.identity, transform);
+            button.GetComponent<Button>().onClick.AddListener(() => HandleSelect(i));
+            buttons.Add(button);
+        }
 
+
+        Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -42,10 +42,13 @@ public class BuffChoiceHandler : MonoBehaviour
         lootController.AddBuff(selection);
 
         Time.timeScale = 1;
-        buff1Handler.gameObject.SetActive(false);
-        buff2Handler.gameObject.SetActive(false);
-
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        foreach (var button in buttons)
+        {
+            DestroyImmediate(button);
+        }
+        buttons.Clear();
     }
 }
