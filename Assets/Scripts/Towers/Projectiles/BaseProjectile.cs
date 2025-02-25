@@ -9,8 +9,8 @@ public class BaseProjectile : MonoBehaviour
     private float speed;
     private int damage;
     private EnemyController enemyController;
+    private BaseTower shotBy;
     private float maximumRange;
-
     private Vector3 startingPosition;
     // Start is called before the first frame update
     void Start()
@@ -30,13 +30,11 @@ public class BaseProjectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.TryGetComponent<BaseProjectile>(out var _)) return;
-
         if (other.gameObject.TryGetComponent<BaseEnemy>(out var enemy))
         {
-            enemyController.DealDamageTo(enemy, damage);
+            enemyController.DealDamageTo(enemy, damage, shotBy);
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
     }
     public void SetSpeed(float s)
     {
@@ -57,5 +55,9 @@ public class BaseProjectile : MonoBehaviour
     public void SetMaximumRange(float range)
     {
         maximumRange = range;
+    }
+    public void SetShotBy(BaseTower tower)
+    {
+        shotBy = tower;
     }
 }

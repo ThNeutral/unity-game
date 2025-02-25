@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class BaseTower : MonoBehaviour
 { 
@@ -24,12 +25,14 @@ public class BaseTower : MonoBehaviour
 
     private float counter;
 
+    private LootController lootController;
     private EnemyController enemyController;
     private TowerController towerController;
 
     // Start is called before the first frame update
     void Start()
     {
+        lootController = FindFirstObjectByType<LootController>();
     }
     void Update()
     {
@@ -86,5 +89,6 @@ public class BaseTower : MonoBehaviour
         projectileBehaviour.SetDamage(damage);
         projectileBehaviour.SetEnemyController(enemyController);
         projectileBehaviour.SetMaximumRange(maximumRange);
+        projectileBehaviour.SetShotBy(this);
     }
 }

@@ -49,7 +49,7 @@ public class PlacementHandler : MonoBehaviour
             case PlacementStates.NONE:
                 {
                     placementCounter += Time.deltaTime;
-                    if (Input.GetButton("Fire1") && placementCounter >= placementCooldown)
+                    if (Input.GetKey(KeyCode.Q) && placementCounter >= placementCooldown)
                     {
                         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out var hitInfo, float.PositiveInfinity))
                         {
@@ -63,6 +63,14 @@ public class PlacementHandler : MonoBehaviour
                 }
             case PlacementStates.GHOST:
                 {
+                    if (Input.GetKey(KeyCode.Mouse1))
+                    {
+                        placementState = PlacementStates.NONE;
+                        ghostTowerController.DestroyGhostTower();
+                        ghostCounter = 0;
+                        break;
+                    }
+
                     var scroll = Input.mouseScrollDelta;
                     if (scroll.y != 0)
                     {
@@ -81,12 +89,11 @@ public class PlacementHandler : MonoBehaviour
                     }
 
                     ghostCounter += Time.deltaTime;
-                    var isButtonPressed = Input.GetButton("Fire1");
                     var isHit = Physics.Raycast(cam.transform.position, cam.transform.forward, out var hitInfo, float.PositiveInfinity);
                     if (!isHit) break;
 
                     var isValidPlacement = hitInfo.distance < maxTowerPlacementDistance;
-                    if (isButtonPressed && isValidPlacement && ghostCounter >= ghostCooldown)
+                    if (Input.GetKey(KeyCode.Q) && isValidPlacement && ghostCounter >= ghostCooldown)
                     {
                         placementState = PlacementStates.NONE;
                         var towerDatas = towersDataProvider.GetTowerDatas()[selectedTower];

@@ -121,7 +121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 1
   speed: 2
-  rb: {fileID: -2482457945520191778}
+  experiencePrefab: {fileID: 7692061198324483170, guid: 79f17addeb574d84eb7d310a72f14ac0, type: 3}
 --- !u!54 &-2482457945520191778
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -17,10 +17,7 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         towerController = FindObjectOfType<TowerController>();
-        PlaceSpawner(transform.position + new Vector3(6, 0, 6), transform.rotation);
-        //PlaceSpawner(transform.position + new Vector3(8, 0, 10), transform.rotation);
-        //PlaceSpawner(transform.position + new Vector3(6, 0, 10), transform.rotation);
-        //PlaceSpawner(transform.position + new Vector3(10, 0, 6), transform.rotation);
+        PlaceSpawner(Vector3.zero, Quaternion.identity);
     }
 
     // Update is called once per frame
@@ -63,17 +60,18 @@ public class EnemyController : MonoBehaviour
 
     public bool IsValidTarget(BaseEnemy enemy, BaseTower target)
     {
+        if (target == null) return false;
         var values = towerController.GetInstantiatedTowers().Values.ToList();
         return values.Contains(target);
     }
 
-    public void DealDamageTo(BaseEnemy enemy, int damage)
+    public void DealDamageTo(BaseEnemy enemy, int damage, BaseTower shooter)
     {
         foreach (var spawner in instantiatedSpawners.Keys)
         {
             if (spawner.Contains(enemy))
             {
-                spawner.DealDamageToEnemy(enemy, damage);
+                spawner.DealDamageToEnemy(enemy, damage, shooter);
                 return;
             }
         }

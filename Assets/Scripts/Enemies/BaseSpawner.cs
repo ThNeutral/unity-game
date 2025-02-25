@@ -55,7 +55,7 @@ public class BaseSpawner : MonoBehaviour
         } while (spawnExclusionZone.Contains(spawnPoint));
 
         var clonePosition = transform.position + spawnPoint;
-        var cloneRotation = Quaternion.Euler(0, 0, 0);
+        var cloneRotation = Quaternion.identity;
 
         var instantiatedEnemy = Instantiate(enemy, clonePosition, cloneRotation);
         var behavoiur = instantiatedEnemy.GetComponent<BaseEnemy>();
@@ -74,11 +74,11 @@ public class BaseSpawner : MonoBehaviour
     {
         return instantiatedEnemies.ContainsKey(enemy);
     }
-    public void DealDamageToEnemy(BaseEnemy enemy, int damage)
+    public void DealDamageToEnemy(BaseEnemy enemy, int damage, BaseTower shooter)
     {
         if (instantiatedEnemies.ContainsKey(enemy))
         {
-            var isDestroyed = enemy.DealDamage(damage);
+            var isDestroyed = enemy.DealDamage(damage, shooter);
             if (isDestroyed) 
             { 
                 instantiatedEnemies.Remove(enemy);

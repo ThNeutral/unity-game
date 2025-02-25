@@ -122,14 +122,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectile: {fileID: 1205548632608710930, guid: b7254cbeefe8eb34f9d54c7ad80c047f, type: 3}
   projectileSpeed: 10
-  shootSpeed: 0.0001
+  shootSpeed: 0.1
   damage: 1
   maximumRange: 30
-  dispersionAngle: 10
-  meshRenderer: {fileID: 3462029235018481298}
-  opaqueMaterial: {fileID: 2100000, guid: 31e82170691a31649a4ab4178ab4589b, type: 2}
-  validTransparentMaterial: {fileID: 2100000, guid: 367ac8d30d8f43c46992bcca30b21fe9, type: 2}
-  invalidTransparentMaterial: {fileID: 2100000, guid: 058a20de3164e0f4c88ab45fb813ed93, type: 2}
+  dispersionAngle: 2
 --- !u!1 &7529903575479447684
 GameObject:
   m_ObjectHideFlags: 0

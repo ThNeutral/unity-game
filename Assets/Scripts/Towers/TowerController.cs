@@ -21,8 +21,7 @@ public class TowerController : MonoBehaviour
         towersDataProvider = FindObjectOfType<TowersDataProvider>();
         enemyController = FindObjectOfType<EnemyController>();
         aimingStrategy = new ClosestAimingStrategy();
-        PlaceTower(towersDataProvider.GetTowerDatas()[0].Tower, transform.position + new Vector3(-10, 0, -10), transform.rotation);
-        //PlaceTower(transform.position + new Vector3(-8, 0, -10), transform.rotation);
+        PlaceTower(towersDataProvider.GetTowerDatas()[0].Tower, transform.position + new Vector3(-7.5f, 0, -7.5f), transform.rotation);
     }
 
     // Update is called once per frame
