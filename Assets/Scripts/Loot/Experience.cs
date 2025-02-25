@@ -20,6 +20,9 @@ public class Experience : MonoBehaviour
     [SerializeField]
     private Vector3 speed = Vector3.zero;
 
+    [SerializeField]
+    private Rigidbody rb;
+
     private bool isDestroyed;
     // Start is called before the first frame update
     void Start()
@@ -35,25 +38,31 @@ public class Experience : MonoBehaviour
             return;
         }
 
-        var colliders = Physics.OverlapBox(unionBounds.center, unionBounds.size * experience, Quaternion.identity).ToList();
-        foreach (var collider in colliders)
+        if (Vector3.Distance(transform.position, lootController.transform.position) <= 5)
         {
-            if ((collider.gameObject.GetInstanceID() != gameObject.GetInstanceID()) 
-                && collider.gameObject.TryGetComponent(out Experience other))
+            MagnetTo(lootController.gameObject.transform);
+        }
+        else
+        {
+            var colliders = Physics.OverlapBox(unionBounds.center, unionBounds.size * experience, Quaternion.identity).ToList();
+            foreach (var collider in colliders)
             {
-                MagnetTo(other);
-                break;
+                if ((collider.gameObject.GetInstanceID() != gameObject.GetInstanceID())
+                    && collider.gameObject.TryGetComponent(out Experience other))
+                {
+                    MagnetTo(other.transform);
+                    break;
+                }
             }
         }
 
-        var size = Mathf.Sqrt(experience) / 4.0f;
-        transform.localScale = Vector3.one * size;
+        transform.localScale = Vector3.one * Mathf.Sqrt(experience) / 4.0f;
+        rb.mass = experience / 4.0f;
     }
-    private void MagnetTo(Experience experience)
+    private void MagnetTo(Transform other)
     {
-        var direction = (experience.transform.position - transform.position).normalized;
-        speed += direction * accelerationRate * Time.deltaTime;
-        transform.position += speed * Time.deltaTime;
+        var direction = (other.position - transform.position).normalized;
+        rb.AddForce(direction * accelerationRate);
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -66,14 +75,23 @@ public class Experience : MonoBehaviour
     public void HandleUnite(Experience target)
     {
         if (isDestroyed) return;
-        speed = Vector3.zero;
-        AddExperience(target.GetExperience());
-        target.ScheduleDestroy();
+        
+        if (target.GetExperience() > experience)
+        {
+            rb.velocity = Vector3.zero;
+            target.AddExperience(experience);
+            this.ScheduleDestroy();
+        }
+        else
+        {
+            this.AddExperience(target.GetExperience());
+            target.ScheduleDestroy();
+        }
     }
     public void HandleCollect()
     {
         if (isDestroyed) return;
-        lootController.AddExperience(experience);
+        lootController.AddBufferExperience(experience);
         Destroy(gameObject);
     }
     public void AddExperience(int exp)

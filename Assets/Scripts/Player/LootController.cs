@@ -47,8 +47,8 @@ public class LootController : MonoBehaviour
             experience.HandleCollect();
         }
     }
-    public void AddExperience(int exp)
+    public void AddBufferExperience(int exp)
     {
-        experience += exp;
+        experienceBuffer += exp;
     }
 }
