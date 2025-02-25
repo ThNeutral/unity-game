@@ -36,7 +36,7 @@ public class BaseEnemy : MonoBehaviour
         if (health <= 0) 
         {
             Destroy(gameObject);
-            Instantiate(experiencePrefab, transform.position, Quaternion.identity).GetComponentInChildren<Experience>().SetKilledBy(shooter);
+            Instantiate(experiencePrefab, transform.position, Quaternion.identity);
             return true;
         }
         return false;

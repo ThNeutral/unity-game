@@ -67,6 +67,7 @@ public class PlacementHandler : MonoBehaviour
                     {
                         placementState = PlacementStates.NONE;
                         ghostTowerController.DestroyGhostTower();
+                        ghostCounter = 0;
                         break;
                     }
 

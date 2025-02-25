@@ -10,23 +10,12 @@ public class Experience : MonoBehaviour
     
     private LootController lootController;
 
-    private BaseTower killedBy;
-
     [SerializeField]
     private Bounds unionBounds;
     // Start is called before the first frame update
     void Start()
     {
         lootController = FindFirstObjectByType<LootController>();
-
-        if (lootController.modeOfCollection == LootController.ModeOfCollection.OnPickUp)
-        {
-            return;
-        } 
-        else
-        {
-            HandleCollect();
-        }
     }
     // Update is called once per frame
     void Update()
@@ -42,7 +31,7 @@ public class Experience : MonoBehaviour
             }
         }
 
-        var size = experience / 4.0f;
+        var size = Mathf.Sqrt(experience) / 4.0f;
         transform.localScale = Vector3.one * size;
     }
     public void HandleUnite(Experience target)
@@ -52,36 +41,8 @@ public class Experience : MonoBehaviour
     }
     public void HandleCollect()
     {
-        switch (lootController.modeOfCollection)
-        {
-            case LootController.ModeOfCollection.Instant:
-                {
-                    lootController.AddExperience(experience);
-                    break;
-                }
-            case LootController.ModeOfCollection.OnPickUp: 
-                {
-                    lootController.AddExperience(experience);
-                    break;
-                }
-            case LootController.ModeOfCollection.ViaTower:
-                {
-                    if (killedBy == null)
-                    {
-                        Debug.LogError("Mode of collection was LootController.ModeOfCollection.ViaTower but killedBy is null");
-                        break;
-                    }
-
-                    killedBy.AddExperience(experience);
-                    break;
-                }
-        }
-        
+        lootController.AddExperience(experience);
         Destroy(gameObject);
-    }
-    public void SetKilledBy(BaseTower tower)
-    {
-        killedBy = tower;
     }
     public void AddExperience(int exp)
     {

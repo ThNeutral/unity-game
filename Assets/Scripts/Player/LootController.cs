@@ -4,18 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LootController : MonoBehaviour
-{
-    public enum ModeOfCollection
-    {
-        Instant, 
-        OnPickUp,
-        ViaTower,
-    }
-    
+{   
     private long experience = 0;
-
-    [SerializeField] 
-    public ModeOfCollection modeOfCollection;
+    private long experienceBuffer = 0;
 
     private BuffChoiceHandler buffChoiceHandler;
 
@@ -42,6 +33,11 @@ public class LootController : MonoBehaviour
     {
         isInChoice = false;
         buffList.Add(buff);
+    }
+    public void TransferExperience()
+    {
+        experience += experienceBuffer;
+        experienceBuffer = 0;
     }
 
     private void OnTriggerEnter(Collider other)
