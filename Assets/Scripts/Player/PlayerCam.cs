@@ -2,9 +2,8 @@ using UnityEngine;
 
 public class PlayerCam : MonoBehaviour
 {
-    public float sens;
-
-    public Transform orientation;
+    [SerializeField] private float sens;
+    [SerializeField] private Transform orientation;
 
     private float xRotation;
     private float yRotation;
