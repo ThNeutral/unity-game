@@ -26,10 +26,11 @@ public class PlayerController : MonoBehaviour
 
     public KeyCode jumpKey = KeyCode.Space;
 
-    private TowerController towerController;
+    private LootController lootController;
 
     private void Start()
     {
+        lootController = FindFirstObjectByType<LootController>();
         jumpready = true;
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
@@ -96,5 +97,13 @@ public class PlayerController : MonoBehaviour
     private void JumpReset()
     {
         jumpready = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.TryGetComponent<Experience>(out var experience))
+        {
+            lootController.PickUpExperienceBlob(experience);
+        }
     }
 }

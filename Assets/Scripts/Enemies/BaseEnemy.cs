@@ -17,9 +17,11 @@ public class BaseEnemy : MonoBehaviour
     private Vector3 moveDirection;
     private BaseTower target;
     private EnemyController enemyController;
+    private LootController lootController;
     // Start is called before the first frame update
     void Start()
     {
+        lootController = FindFirstObjectByType<LootController>();
         target = enemyController.GetTarget(this);
     }
 
@@ -30,13 +32,13 @@ public class BaseEnemy : MonoBehaviour
         moveDirection = (target.transform.position - transform.position).normalized;
         transform.position += speed * Time.deltaTime * moveDirection;
     }
-    public bool DealDamage(int damage, BaseTower shooter)
+    public bool DealDamage(int damage)
     {
         health -= damage;
         if (health <= 0) 
         {
             Destroy(gameObject);
-            Instantiate(experiencePrefab, transform.position, Quaternion.identity);
+            lootController.InstantiateExperienceBlob(transform.position, Quaternion.identity);
             return true;
         }
         return false;
