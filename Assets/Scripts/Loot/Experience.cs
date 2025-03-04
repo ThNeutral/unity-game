@@ -23,6 +23,8 @@ public class Experience : MonoBehaviour
     [SerializeField]
     private Rigidbody rb;
 
+    private bool isCenteral = false;
+
     private bool isDestroyed;
     // Start is called before the first frame update
     void Start()
@@ -38,21 +40,14 @@ public class Experience : MonoBehaviour
             return;
         }
 
-        if (Vector3.Distance(transform.position, lootController.transform.position) <= 5)
+        var colliders = Physics.OverlapBox(unionBounds.center, unionBounds.size * experience, Quaternion.identity).ToList();
+        foreach (var collider in colliders)
         {
-            MagnetTo(lootController.gameObject.transform);
-        }
-        else
-        {
-            var colliders = Physics.OverlapBox(unionBounds.center, unionBounds.size * experience, Quaternion.identity).ToList();
-            foreach (var collider in colliders)
+            if ((collider.gameObject.GetInstanceID() != gameObject.GetInstanceID())
+                && collider.gameObject.TryGetComponent(out Experience other))
             {
-                if ((collider.gameObject.GetInstanceID() != gameObject.GetInstanceID())
-                    && collider.gameObject.TryGetComponent(out Experience other))
-                {
-                    MagnetTo(other.transform);
-                    break;
-                }
+                MagnetTo(other.transform);
+                break;
             }
         }
 
