@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LootController : MonoBehaviour
-{   
+{
+    [SerializeField]
+    private GameObject experiencePrefab;
+
     private long experience = 0;
     private long experienceBuffer = 0;
 
@@ -13,6 +16,12 @@ public class LootController : MonoBehaviour
     private List<int> buffList = new();
 
     private bool isInChoice = false;
+
+    private Dictionary<Experience, bool> experiences = new();
+
+    [SerializeField]
+    private float mergeRadius = 10f;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -34,21 +43,91 @@ public class LootController : MonoBehaviour
         isInChoice = false;
         buffList.Add(buff);
     }
+    public Dictionary<Experience, bool> GetInstantiatedExperienceBlobs()
+    {
+        return experiences;
+    }
     public void TransferExperience()
     {
         experience += experienceBuffer;
         experienceBuffer = 0;
     }
-
-    private void OnTriggerEnter(Collider other)
+    public void InstantiateExperienceBlob(Vector3 position, Quaternion rotation)
     {
-        if (other.gameObject.TryGetComponent<Experience>(out var experience))
+        experiences.Add(Instantiate(experiencePrefab, position, rotation).GetComponentInChildren<Experience>(), false);
+    }
+    public void PickUpExperienceBlob(Experience experience)
+    {
+        if (experiences.TryGetValue(experience, out var _))
         {
-            experience.HandleCollect();
+            experiences.Remove(experience);
+            this.experience += experience.GetExperience();
+            Destroy(experience.gameObject);
         }
     }
-    public void AddBufferExperience(int exp)
+    public void UniteExperienceBlobs(Experience experience1, Experience experience2)
     {
-        experienceBuffer += exp;
+        var does1Exists = experiences.TryGetValue(experience1, out var is1Central);
+        var does2Exists = experiences.TryGetValue(experience2, out var is2Central);
+
+        if (!does1Exists || !does2Exists) return;
+
+        if (!is1Central && !is2Central)
+        {
+            experience1.AddExperience(experience2.GetExperience());
+            RemoveExperience(experience2);
+        }
+        else if (is1Central && !is2Central)
+        {
+            experience1.AddExperience(experience2.GetExperience());
+            RemoveExperience(experience2);
+        }
+        else if (!is1Central && is2Central)
+        {
+            experience2.AddExperience(experience1.GetExperience());
+            RemoveExperience(experience1);
+        }
+        else
+        {
+            var toStay = experience1.GetExperience() >= experience2.GetExperience() ? experience1 : experience2;
+            var toDestroy = experience1.GetExperience() < experience2.GetExperience() ? experience1 : experience2;
+            toStay.AddExperience(toDestroy.GetExperience());
+            RemoveExperience(toDestroy);
+        }
+    }
+    private void RemoveExperience(Experience experience)
+    {
+        experiences.Remove(experience);
+        Destroy(experience.gameObject);
+    }
+    public Experience GetMergeTarget(Experience experience)
+    {
+        if (experiences.TryGetValue(experience, out var isCentral) && isCentral)
+        {
+            return null;
+        }
+
+        Experience target = null;
+        var closest = float.MaxValue;
+        
+        foreach (var kvp in experiences)
+        {
+            if (!kvp.Value) continue;
+
+            var distance = Vector3.Distance(experience.transform.position, kvp.Key.transform.position);
+            if (distance < closest)
+            {
+                target = kvp.Key;
+                closest = distance;
+            }
+        }
+        
+        if (closest > mergeRadius)
+        {
+            experiences[experience] = true;
+            return null;
+        }
+
+        return target;
     }
 }

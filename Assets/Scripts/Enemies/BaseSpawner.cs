@@ -74,11 +74,11 @@ public class BaseSpawner : MonoBehaviour
     {
         return instantiatedEnemies.ContainsKey(enemy);
     }
-    public void DealDamageToEnemy(BaseEnemy enemy, int damage, BaseTower shooter)
+    public void DealDamageToEnemy(BaseEnemy enemy, int damage)
     {
         if (instantiatedEnemies.ContainsKey(enemy))
         {
-            var isDestroyed = enemy.DealDamage(damage, shooter);
+            var isDestroyed = enemy.DealDamage(damage);
             if (isDestroyed) 
             { 
                 instantiatedEnemies.Remove(enemy);

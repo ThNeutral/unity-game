@@ -89,6 +89,5 @@ public class BaseTower : MonoBehaviour
         projectileBehaviour.SetDamage(damage);
         projectileBehaviour.SetEnemyController(enemyController);
         projectileBehaviour.SetMaximumRange(maximumRange);
-        projectileBehaviour.SetShotBy(this);
     }
 }

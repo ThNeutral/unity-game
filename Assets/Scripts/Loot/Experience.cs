@@ -13,43 +13,24 @@ public class Experience : MonoBehaviour
     private float accelerationRate = 1f;
 
     private LootController lootController;
-
-    [SerializeField]
-    private Bounds unionBounds;
-
-    [SerializeField]
-    private Vector3 speed = Vector3.zero;
+    private PlayerController playerController;
 
     [SerializeField]
     private Rigidbody rb;
 
-    private bool isCenteral = false;
+    private Experience mergeTarget = null;
 
-    private bool isDestroyed;
     // Start is called before the first frame update
     void Start()
     {
         lootController = FindFirstObjectByType<LootController>();
+        playerController = FindFirstObjectByType<PlayerController>();
     }
     // Update is called once per frame
     void Update()
     {
-        if (isDestroyed)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        var colliders = Physics.OverlapBox(unionBounds.center, unionBounds.size * experience, Quaternion.identity).ToList();
-        foreach (var collider in colliders)
-        {
-            if ((collider.gameObject.GetInstanceID() != gameObject.GetInstanceID())
-                && collider.gameObject.TryGetComponent(out Experience other))
-            {
-                MagnetTo(other.transform);
-                break;
-            }
-        }
+        if (mergeTarget == null) mergeTarget = lootController.GetMergeTarget(this);
+        if (mergeTarget != null) MagnetTo(mergeTarget.transform);
 
         transform.localScale = Vector3.one * Mathf.Sqrt(experience) / 4.0f;
         rb.mass = experience / 4.0f;
@@ -61,33 +42,11 @@ public class Experience : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (isDestroyed) return;
-        if (other.gameObject.TryGetComponent<Experience>(out var experience))
+        var experience = other.gameObject.GetComponentInChildren<Experience>();
+        if (experience != null)
         {
-            HandleUnite(experience);
+            lootController.UniteExperienceBlobs(experience, this);
         }
-    }
-    public void HandleUnite(Experience target)
-    {
-        if (isDestroyed) return;
-        
-        if (target.GetExperience() > experience)
-        {
-            rb.velocity = Vector3.zero;
-            target.AddExperience(experience);
-            this.ScheduleDestroy();
-        }
-        else
-        {
-            this.AddExperience(target.GetExperience());
-            target.ScheduleDestroy();
-        }
-    }
-    public void HandleCollect()
-    {
-        if (isDestroyed) return;
-        lootController.AddBufferExperience(experience);
-        Destroy(gameObject);
     }
     public void AddExperience(int exp)
     {
@@ -96,9 +55,5 @@ public class Experience : MonoBehaviour
     public int GetExperience()
     {
         return experience;
-    }
-    public void ScheduleDestroy()
-    {
-        isDestroyed = true;
     }
 }
