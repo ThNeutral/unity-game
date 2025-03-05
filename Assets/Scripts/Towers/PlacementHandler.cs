@@ -29,6 +29,9 @@ public class PlacementHandler : MonoBehaviour
     [SerializeField]
     private float maxTowerPlacementDistance = 5f;
 
+    [SerializeField]
+    private LayerMask placementLayerMask;
+
     private PlacementStates placementState = PlacementStates.NONE;
 
     private int selectedTower = 0;
@@ -50,7 +53,7 @@ public class PlacementHandler : MonoBehaviour
                     placementCounter += Time.deltaTime;
                     if (Input.GetKey(KeyCode.Q) && placementCounter >= placementCooldown)
                     {
-                        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out var hitInfo, float.PositiveInfinity))
+                        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out var hitInfo, float.PositiveInfinity, placementLayerMask))
                         {
                             placementState = PlacementStates.GHOST;
                             var towerDatas = towersDataProvider.GetTowerDatas()[selectedTower];
@@ -88,7 +91,7 @@ public class PlacementHandler : MonoBehaviour
                     }
 
                     ghostCounter += Time.deltaTime;
-                    var isHit = Physics.Raycast(cam.transform.position, cam.transform.forward, out var hitInfo, float.PositiveInfinity);
+                    var isHit = Physics.Raycast(cam.transform.position, cam.transform.forward, out var hitInfo, float.PositiveInfinity, placementLayerMask);
                     if (!isHit) break;
 
                     var isValidPlacement = hitInfo.distance < maxTowerPlacementDistance;
