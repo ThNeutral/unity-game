@@ -64,7 +64,6 @@ public class TowerController : MonoBehaviour
     {
         var tower = Instantiate(towerPrefab, position, rotation);
         var behaviour = tower.GetComponentInChildren<BaseTower>();
-        behaviour.enabled = false;
         behaviour.SetEnemyController(enemyController);
         behaviour.SetTowerController(this);
         instantiatedTowers[behaviour] = true;
