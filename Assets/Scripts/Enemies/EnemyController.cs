@@ -13,9 +13,16 @@ public class EnemyController : MonoBehaviour
     private Dictionary<BaseSpawner, bool> instantiatedSpawners = new();
 
     private TowerController towerController;
+    private PlayerController playerController;
+
+    private Dictionary<BaseEnemy, BaseTower> targets = new();
+
+    private IEnemyAimingStrategy aimingStrategy;
     // Start is called before the first frame update
     void Start()
     {
+        aimingStrategy = new ClosestTowerEnemyAimingStrategy();
+        playerController = FindFirstObjectByType<PlayerController>();
         towerController = FindObjectOfType<TowerController>();
         PlaceSpawner(Vector3.zero, Quaternion.identity);
     }
@@ -23,6 +30,7 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        targets = aimingStrategy.GetTargets(GetInstantiatedEnemies(), towerController.GetInstantiatedTowers());
     }
 
     public Dictionary<BaseEnemy, bool> GetInstantiatedEnemies()
@@ -52,17 +60,37 @@ public class EnemyController : MonoBehaviour
         return closestEnemy;
     }
 
-    public BaseTower GetTarget(BaseEnemy enemy)
+    public MonoBehaviour GetTarget(BaseEnemy enemy)
     {
-        var values = towerController.GetInstantiatedTowers().Keys.ToList();
-        return values[UnityEngine.Random.Range(0, values.Count)];
+        var isValid = targets.TryGetValue(enemy, out var tower);
+        if (!isValid) return null;
+
+        var distanceToEnemy = Vector3.Distance(enemy.transform.position, tower.transform.position);
+        var distanceToPlayer = Vector3.Distance(enemy.transform.position, playerController.transform.position);
+
+        if (distanceToPlayer < distanceToEnemy) return playerController;
+        return tower;
     }
 
-    public bool IsValidTarget(BaseEnemy enemy, BaseTower target)
+    public bool IsValidTarget(BaseEnemy enemy, MonoBehaviour target)
     {
         if (target == null) return false;
-        var values = towerController.GetInstantiatedTowers().Values.ToList();
-        return values.Contains(target);
+        switch (target)
+        {
+            case BaseTower:
+                {
+                    var res = targets.TryGetValue(enemy, out var tower);
+                    return res && tower == target;
+                }
+            case PlayerController:
+                {
+                    return true;
+                }
+            default:
+                {
+                    return false;
+                }
+        }
     }
 
     public void DealDamageTo(BaseEnemy enemy, int damage)

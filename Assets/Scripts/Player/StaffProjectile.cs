@@ -4,8 +4,17 @@ using UnityEngine;
 
 public class StafProjectile : MonoBehaviour
 {
+    [SerializeField]
+    private int damage = 1;
+
     private bool allowInvoke = true;
 
+    private EnemyController enemyController;
+    
+    private void Start()
+    {
+        enemyController = FindFirstObjectByType<EnemyController>();    
+    }
     private void Update()
     {
         if (allowInvoke)
@@ -17,7 +26,15 @@ public class StafProjectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Invoke(nameof(BulletDeath), 0.05f);
+        if (collision.gameObject.TryGetComponent<BaseEnemy>(out var enemy))
+        {
+            enemyController.DealDamageTo(enemy, damage);
+            BulletDeath();
+        }
+        else
+        {
+            Invoke(nameof(BulletDeath), 0.05f);
+        }
     }
 
     private void BulletDeath()

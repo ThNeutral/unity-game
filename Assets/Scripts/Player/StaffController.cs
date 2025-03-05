@@ -1,4 +1,4 @@
-using System.Collections;
+п»їusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -46,14 +46,14 @@ public class StaffController : MonoBehaviour
     private void Shoot()
     {
         readyToShoot = false;
-        Ray ray = Cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0)); //рэйкаст на центр экрана
+        Ray ray = Cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0)); //Г°ГЅГ©ГЄГ Г±ГІ Г­Г  Г¶ГҐГ­ГІГ° ГЅГЄГ°Г Г­Г 
         RaycastHit hit;
 
         Vector3 targetPoint;
         if (Physics.Raycast(ray, out hit))
             targetPoint = hit.point;
         else
-            targetPoint = ray.GetPoint(75); //далеко от игрока
+            targetPoint = ray.GetPoint(75); //Г¤Г Г«ГҐГЄГ® Г®ГІ ГЁГЈГ°Г®ГЄГ 
 
         Vector3 direction = targetPoint - shootPoint.position;
 

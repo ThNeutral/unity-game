@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ClosestAimingStrategy : IAimingStrategy
+public class ClosestEnemyTowerAimingStrategy : ITowerAimingStrategy
 {
     public Dictionary<BaseTower, List<BaseEnemy>> GetTargets(Dictionary<BaseTower, bool> towers, Dictionary<BaseEnemy, bool> enemies)
     {
@@ -35,7 +35,6 @@ public class ClosestAimingStrategy : IAimingStrategy
                 towerAssignments[bestTower].Add(enemy);
             }
         }
-
 
         return towerAssignments;
     }

@@ -15,7 +15,7 @@ public class BaseEnemy : MonoBehaviour
     private GameObject experiencePrefab;
 
     private Vector3 moveDirection;
-    private BaseTower target;
+    private MonoBehaviour target;
     private EnemyController enemyController;
     private LootController lootController;
     // Start is called before the first frame update
@@ -28,7 +28,9 @@ public class BaseEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!enemyController.IsValidTarget(this, target)) target = enemyController.GetTarget(this);
+        target = enemyController.GetTarget(this);
+        if (!enemyController.IsValidTarget(this, target)) return;
+
         moveDirection = (target.transform.position - transform.position).normalized;
         transform.position += speed * Time.deltaTime * moveDirection;
     }
