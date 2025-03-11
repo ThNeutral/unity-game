@@ -6,27 +6,28 @@ using UnityEngine;
 public class BaseEnemy : MonoBehaviour
 {
     [SerializeField]
-    private int health = 1;
+    protected int health = 1;
 
     [SerializeField]
-    private float speed = 2;
+    protected float speed = 2;
 
     [SerializeField]
-    private GameObject experiencePrefab;
+    protected GameObject experiencePrefab;
 
-    private Vector3 moveDirection;
-    private MonoBehaviour target;
-    private EnemyController enemyController;
-    private LootController lootController;
+    protected Vector3 moveDirection;
+    protected MonoBehaviour target;
+    protected EnemyController enemyController;
+    protected LootController lootController;
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
+        enemyController = FindFirstObjectByType<EnemyController>();
         lootController = FindFirstObjectByType<LootController>();
         target = enemyController.GetTarget(this);
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
         target = enemyController.GetTarget(this);
         if (!enemyController.IsValidTarget(this, target)) return;
@@ -52,9 +53,5 @@ public class BaseEnemy : MonoBehaviour
     public float GetSpeed()
     {
         return speed;
-    }
-    public void SetEnemyController(EnemyController controller)
-    {
-        enemyController = controller;
     }
 }

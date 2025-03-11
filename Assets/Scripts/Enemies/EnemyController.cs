@@ -17,6 +17,8 @@ public class EnemyController : MonoBehaviour
 
     private Dictionary<BaseEnemy, BaseTower> targets = new();
 
+    private BaseSpawner defaultSpawner;
+
     private IEnemyAimingStrategy aimingStrategy;
     // Start is called before the first frame update
     void Start()
@@ -24,6 +26,8 @@ public class EnemyController : MonoBehaviour
         aimingStrategy = new ClosestTowerEnemyAimingStrategy();
         playerController = FindFirstObjectByType<PlayerController>();
         towerController = FindObjectOfType<TowerController>();
+
+        defaultSpawner = PlaceDisabledSpawner(spawnerPrefab, Vector3.zero, Quaternion.identity).GetComponentInChildren<BaseSpawner>();
         PlaceSpawner(Vector3.zero, Quaternion.identity);
     }
 
@@ -31,6 +35,17 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         targets = aimingStrategy.GetTargets(GetInstantiatedEnemies(), towerController.GetInstantiatedTowers());
+    }
+
+    public void MoveEnemiesToDefaultSpawner(BaseSpawner spawner)
+    {
+        if (!instantiatedSpawners.TryGetValue(spawner, out var _))
+        {
+            Debug.LogError("Tried to move enemies from non existent spawner");
+            return;
+        }
+
+        defaultSpawner.AddEnemies(spawner.GetInstantiatedEnemies());
     }
 
     public Dictionary<BaseEnemy, bool> GetInstantiatedEnemies()
@@ -114,8 +129,34 @@ public class EnemyController : MonoBehaviour
     {
         var spawner = Instantiate(spawnerPrefab, position, rotation);
         var behaviour = spawner.GetComponentInChildren<BaseSpawner>();
-        behaviour.SetEnemyController(this);
         instantiatedSpawners[behaviour] = true;
         return spawner;
+    }
+
+    private GameObject PlaceDisabledSpawner(GameObject spawnerPrefab, Vector3 position, Quaternion rotation)
+    {
+        var spawner = PlaceSpawner(spawnerPrefab, position, rotation);
+        spawner.SetActive(false);
+        return spawner;
+    }
+    public void RegisterSpawner(BaseSpawner spawner)
+    {
+        if (instantiatedSpawners.TryGetValue(spawner, out bool _))
+        {
+            Debug.LogError("Tried to register spawner that is already tracked");
+            return;
+        }
+
+        instantiatedSpawners[spawner] = true;
+    }
+    public void UnregisterSpawner(BaseSpawner spawner)
+    {
+        if (!instantiatedSpawners.TryGetValue(spawner, out bool _))
+        {
+            Debug.LogError("Tried to unregister spawner that is already tracked");
+            return;
+        }
+
+        instantiatedSpawners.Remove(spawner);
     }
 }

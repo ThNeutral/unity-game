@@ -1,30 +1,37 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 public class BaseSpawner : MonoBehaviour
 {
     [SerializeField]
-    private Bounds spawnZone;
-    [SerializeField] 
-    private Bounds spawnExclusionZone;
+    protected Bounds spawnZone;
     [SerializeField]
-    private float spawnDelay = 0.2f;
+    protected Bounds spawnExclusionZone;
     [SerializeField]
-    private GameObject enemy;
+    protected float spawnDelay = 0.2f;
+    [SerializeField]
+    protected GameObject enemy;
 
-    private EnemyController enemyController;
-    private Dictionary<BaseEnemy, bool> instantiatedEnemies = new();
-    private float counter = 0f;
+    [SerializeField]
+    private int maxNumberOfSummons = 2;
+
+    protected EnemyController enemyController;
+    protected Dictionary<BaseEnemy, bool> instantiatedEnemies = new();
+    protected float counter = 0f;
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
+        enemyController = FindFirstObjectByType<EnemyController>();
     }
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
+        if (instantiatedEnemies.Count >= maxNumberOfSummons) return;
+
         counter += Time.deltaTime;
         while (counter > spawnDelay) 
         {
@@ -60,8 +67,6 @@ public class BaseSpawner : MonoBehaviour
         var instantiatedEnemy = Instantiate(enemy, clonePosition, cloneRotation);
         var behavoiur = instantiatedEnemy.GetComponent<BaseEnemy>();
 
-        behavoiur.SetEnemyController(enemyController);
-
         instantiatedEnemies[behavoiur] = true;
 
         counter = 0;
@@ -85,8 +90,8 @@ public class BaseSpawner : MonoBehaviour
             }
         }
     }
-    public void SetEnemyController(EnemyController controller)
+    public void AddEnemies(Dictionary<BaseEnemy, bool> enemies)
     {
-        enemyController = controller;
+        instantiatedEnemies = instantiatedEnemies.Concat(enemies).ToDictionary(kv => kv.Key, kv => kv.Value);
     }
 }
