@@ -1,19 +1,39 @@
 using UnityEngine;
 
-public class SummonerSpanwer : BaseSpawner
+public class SummonerSpawner : BaseSpawner
 {
     [SerializeField]
-    private GameObject summoner;
+    private Summoner summoner;
 
-    private new void Start()
+    private void Start()
     {
-        base.Start();
+        Initialize();
         enemyController.RegisterSpawner(this);
+    }
+
+    private void Update()
+    {
+        if (instantiatedEnemies.Count >= maxNumberOfSummons) return;
+
+        spawnCounter += Time.deltaTime;
+        while (spawnCounter > spawnDelay)
+        {
+            SpawnEnemy(true);
+            spawnCounter -= spawnDelay;
+        }
     }
 
     private void OnDestroy()
     {
         enemyController.MoveEnemiesToDefaultSpawner(this);
         enemyController.UnregisterSpawner(this);
+    }
+
+    public void SetTarget(EnemyTarget target)
+    {
+        foreach (var enemy in instantiatedEnemies.Keys)
+        {
+            enemy.SetTarget(target);
+        }
     }
 }

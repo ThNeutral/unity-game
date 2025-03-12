@@ -17,29 +17,33 @@ public class BaseSpawner : MonoBehaviour
     protected GameObject enemy;
 
     [SerializeField]
-    private int maxNumberOfSummons = 2;
+    protected int maxNumberOfSummons = 2;
 
     protected EnemyController enemyController;
     protected Dictionary<BaseEnemy, bool> instantiatedEnemies = new();
-    protected float counter = 0f;
+    protected float spawnCounter = 0f;
     // Start is called before the first frame update
-    protected void Start()
+    private void Start()
     {
-        enemyController = FindFirstObjectByType<EnemyController>();
+        Initialize();
     }
     // Update is called once per frame
-    protected void Update()
+    private void Update()
     {
         if (instantiatedEnemies.Count >= maxNumberOfSummons) return;
 
-        counter += Time.deltaTime;
-        while (counter > spawnDelay) 
+        spawnCounter += Time.deltaTime;
+        while (spawnCounter > spawnDelay) 
         {
             SpawnEnemy();
-            counter -= spawnDelay;
+            spawnCounter -= spawnDelay;
         }
     }
-    public void SpawnEnemy()
+    protected void Initialize()
+    {
+        enemyController = FindFirstObjectByType<EnemyController>();
+    }
+    public void SpawnEnemy(bool isControlled = false)
     {
         const int maxCount = 100;
         int count = 0;
@@ -67,9 +71,11 @@ public class BaseSpawner : MonoBehaviour
         var instantiatedEnemy = Instantiate(enemy, clonePosition, cloneRotation);
         var behavoiur = instantiatedEnemy.GetComponent<BaseEnemy>();
 
+        behavoiur.SetIsControlled(isControlled);
+
         instantiatedEnemies[behavoiur] = true;
 
-        counter = 0;
+        spawnCounter = 0;
     }
     public Dictionary<BaseEnemy, bool> GetInstantiatedEnemies()
     {

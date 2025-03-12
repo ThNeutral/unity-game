@@ -5,6 +5,11 @@ using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour
 {
+    public enum EnemyTargetIntention
+    {
+        Default,
+        KeepDistance
+    }
     [SerializeField]
     protected int health = 1;
 
@@ -14,25 +19,50 @@ public class BaseEnemy : MonoBehaviour
     [SerializeField]
     protected GameObject experiencePrefab;
 
+    [SerializeField]
+    protected EnemyTargetIntention targetIntention;
+
+    [SerializeField]
+    protected float playerAgroRange = 10f;
+
+    [SerializeField]
+    protected float towerAgroRange = 10f;
+
+    [SerializeField]
+    protected float treeAgroRange = 10f;
+
     protected Vector3 moveDirection;
-    protected MonoBehaviour target;
+    protected EnemyTarget target;
     protected EnemyController enemyController;
     protected LootController lootController;
+
+    protected bool isControlled = false;
     // Start is called before the first frame update
-    protected void Start()
+    private void Start()
     {
-        enemyController = FindFirstObjectByType<EnemyController>();
-        lootController = FindFirstObjectByType<LootController>();
-        target = enemyController.GetTarget(this);
+        Initialize();
     }
 
     // Update is called once per frame
-    protected void Update()
+    private void Update()
     {
-        target = enemyController.GetTarget(this);
+        HandleTarget();
+        HandleMove();
+    }
+    protected void Initialize()
+    {
+        enemyController = FindFirstObjectByType<EnemyController>();
+        lootController = FindFirstObjectByType<LootController>();
+    }
+    protected void HandleTarget()
+    {
+        if (!isControlled) target = enemyController.GetTarget(this);
+    }
+    protected void HandleMove()
+    {
         if (!enemyController.IsValidTarget(this, target)) return;
 
-        moveDirection = (target.transform.position - transform.position).normalized;
+        moveDirection = (target.Position - transform.position).normalized;
         transform.position += speed * Time.deltaTime * moveDirection;
     }
     public bool DealDamage(int damage)
@@ -46,12 +76,51 @@ public class BaseEnemy : MonoBehaviour
         }
         return false;
     }
-    public Vector3 GetMoveDirection()
+    public Vector3 GetSpeedDirection()
     {
         return moveDirection;
     }
-    public float GetSpeed()
+    public float GetSpeedMagnitude()
     {
         return speed;
+    }
+    public Vector3 GetSpeed()
+    {
+        return moveDirection * speed;
+    }
+
+    public void SetIsControlled(bool value)
+    {
+        isControlled = value;
+    }
+
+    public void SetTarget(EnemyTarget target)
+    {
+        if (!isControlled)
+        {
+            Debug.LogError("Cannot set target to not controlled enemy");
+            return;
+        }
+        this.target = target;
+    }
+
+    public EnemyTargetIntention GetTargetIntention()
+    {
+        return targetIntention;
+    }
+
+    public float GetPlayerAgroRange()
+    {
+        return playerAgroRange;
+    }
+
+    public float GetTowerAgroRange()
+    {
+        return towerAgroRange;
+    }
+
+    public float GetTreeAgroRange()
+    {
+        return treeAgroRange;
     }
 }

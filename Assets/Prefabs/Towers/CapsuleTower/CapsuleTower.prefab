@@ -122,10 +122,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectile: {fileID: 1205548632608710930, guid: b7254cbeefe8eb34f9d54c7ad80c047f, type: 3}
   projectileSpeed: 10
-  shootSpeed: 0.1
+  shootSpeed: 10
   damage: 1
   maximumRange: 30
   dispersionAngle: 2
+  shootRadius: 3
 --- !u!1 &7529903575479447684
 GameObject:
   m_ObjectHideFlags: 0

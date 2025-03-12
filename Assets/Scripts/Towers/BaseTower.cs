@@ -23,6 +23,9 @@ public class BaseTower : MonoBehaviour
     [SerializeField]
     private float dispersionAngle = 10f;
 
+    [SerializeField]
+    private float shootRadius = 10f;
+
     private float counter;
 
     private LootController lootController;
@@ -63,16 +66,17 @@ public class BaseTower : MonoBehaviour
     {
         towerController = controller;
     }
-    public void ShootAt(BaseEnemy enemyBehaviour)
+    public float GetShootRadius()
     {
-        var enemyMoveDirection = enemyBehaviour.GetMoveDirection();
-        var enemySpeed = enemyBehaviour.GetSpeed();
-        var enemyPosition = enemyBehaviour.transform.position;
+        return shootRadius;
+    }
+    public void ShootAt(TowerTarget target)
+    {
         var selfPosition = transform.position;
 
-        var estimatedFlightTime = (enemyPosition - selfPosition).magnitude / projectileSpeed;
+        var estimatedFlightTime = (target.Position - selfPosition).magnitude / projectileSpeed;
 
-        var enemyFuturePosition = enemyPosition + enemySpeed * estimatedFlightTime * enemyMoveDirection;
+        var enemyFuturePosition = target.Position + target.Speed * estimatedFlightTime;
 
         var xRotation = Random.Range(-dispersionAngle / 2, dispersionAngle / 2);
         var yRotation = Random.Range(-dispersionAngle / 2, dispersionAngle / 2);

@@ -5,5 +5,25 @@ using UnityEngine;
 public class Summoner : BaseEnemy
 {
     [SerializeField]
-    private GameObject spawner;
+    private SummonerSpawner spawner;
+
+    private void Start()
+    {
+        Initialize();
+    }
+
+    private void Update()
+    {
+        HandleTarget();
+        HandleTargetForSummons();
+        HandleMove();
+    }
+
+    private void HandleTargetForSummons()
+    {
+        if (enemyController.IsValidTarget(this, target))
+        {
+            spawner.SetTarget(target);
+        }
+    }
 }
