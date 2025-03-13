@@ -70,11 +70,16 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
-        direction = orientation.forward * verticalinput + orientation.right * horizontalinput;
+        direction = GetSpeed();
         if(grounded)
             rb.AddForce(direction.normalized * Speed * 10f, ForceMode.Force);
         else if(!grounded)
             rb.AddForce(direction.normalized * Speed * 10f * airmultiplier, ForceMode.Force);
+    }
+
+    public Vector3 GetSpeed()
+    {
+        return orientation.forward * verticalinput + orientation.right * horizontalinput;
     }
 
     private void MoveControl()

@@ -1,38 +1,49 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 public class BaseSpawner : MonoBehaviour
 {
     [SerializeField]
-    private Bounds spawnZone;
-    [SerializeField] 
-    private Bounds spawnExclusionZone;
+    protected Bounds spawnZone;
     [SerializeField]
-    private float spawnDelay = 0.2f;
+    protected Bounds spawnExclusionZone;
     [SerializeField]
-    private GameObject enemy;
+    protected float spawnDelay = 0.2f;
+    [SerializeField]
+    protected GameObject enemy;
 
-    private EnemyController enemyController;
-    private Dictionary<BaseEnemy, bool> instantiatedEnemies = new();
-    private float counter = 0f;
+    [SerializeField]
+    protected int maxNumberOfSummons = 2;
+
+    protected EnemyController enemyController;
+    protected Dictionary<BaseEnemy, bool> instantiatedEnemies = new();
+    protected float spawnCounter = 0f;
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
+        Initialize();
     }
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        counter += Time.deltaTime;
-        while (counter > spawnDelay) 
+        if (instantiatedEnemies.Count >= maxNumberOfSummons) return;
+
+        spawnCounter += Time.deltaTime;
+        while (spawnCounter > spawnDelay) 
         {
             SpawnEnemy();
-            counter -= spawnDelay;
+            spawnCounter -= spawnDelay;
         }
     }
-    public void SpawnEnemy()
+    protected void Initialize()
+    {
+        enemyController = FindFirstObjectByType<EnemyController>();
+    }
+    public void SpawnEnemy(bool isControlled = false)
     {
         const int maxCount = 100;
         int count = 0;
@@ -60,11 +71,11 @@ public class BaseSpawner : MonoBehaviour
         var instantiatedEnemy = Instantiate(enemy, clonePosition, cloneRotation);
         var behavoiur = instantiatedEnemy.GetComponent<BaseEnemy>();
 
-        behavoiur.SetEnemyController(enemyController);
+        behavoiur.SetIsControlled(isControlled);
 
         instantiatedEnemies[behavoiur] = true;
 
-        counter = 0;
+        spawnCounter = 0;
     }
     public Dictionary<BaseEnemy, bool> GetInstantiatedEnemies()
     {
@@ -85,8 +96,8 @@ public class BaseSpawner : MonoBehaviour
             }
         }
     }
-    public void SetEnemyController(EnemyController controller)
+    public void AddEnemies(Dictionary<BaseEnemy, bool> enemies)
     {
-        enemyController = controller;
+        instantiatedEnemies = instantiatedEnemies.Concat(enemies).ToDictionary(kv => kv.Key, kv => kv.Value);
     }
 }

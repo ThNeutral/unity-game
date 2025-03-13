@@ -5,33 +5,67 @@ using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour
 {
-    [SerializeField]
-    private int health = 1;
-
-    [SerializeField]
-    private float speed = 2;
-
-    [SerializeField]
-    private GameObject experiencePrefab;
-
-    private Vector3 moveDirection;
-    private MonoBehaviour target;
-    private EnemyController enemyController;
-    private LootController lootController;
-    // Start is called before the first frame update
-    void Start()
+    public enum EnemyTargetIntention
     {
-        lootController = FindFirstObjectByType<LootController>();
-        target = enemyController.GetTarget(this);
+        Default,
+        KeepDistance
+    }
+    [SerializeField]
+    protected int health = 1;
+
+    [SerializeField]
+    protected float speed = 2;
+
+    [SerializeField]
+    protected GameObject experiencePrefab;
+
+    [SerializeField]
+    protected EnemyTargetIntention targetIntention;
+
+    [SerializeField]
+    protected float playerAgroRange = 10f;
+
+    [SerializeField]
+    protected float towerAgroRange = 10f;
+
+    [SerializeField]
+    protected float treeAgroRange = 10f;
+
+    [SerializeField]
+    protected float towerAvoidanceDistance = 3f;
+
+    protected Vector3 moveDirection;
+    protected EnemyTarget target;
+    protected EnemyController enemyController;
+    protected LootController lootController;
+
+    protected bool isControlled = false;
+    // Start is called before the first frame update
+    private void Start()
+    {
+        Initialize();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        target = enemyController.GetTarget(this);
+        HandleTarget();
+        HandleMove();
+    }
+    protected void Initialize()
+    {
+        enemyController = FindFirstObjectByType<EnemyController>();
+        lootController = FindFirstObjectByType<LootController>();
+    }
+    protected void HandleTarget()
+    {
+        if (!isControlled) target = enemyController.GetTarget(this);
+    }
+    protected void HandleMove()
+    {
         if (!enemyController.IsValidTarget(this, target)) return;
 
-        moveDirection = (target.transform.position - transform.position).normalized;
+        moveDirection = (target.Position - transform.position).normalized;
         transform.position += speed * Time.deltaTime * moveDirection;
     }
     public bool DealDamage(int damage)
@@ -45,16 +79,56 @@ public class BaseEnemy : MonoBehaviour
         }
         return false;
     }
-    public Vector3 GetMoveDirection()
+    public Vector3 GetSpeedDirection()
     {
         return moveDirection;
     }
-    public float GetSpeed()
+    public float GetSpeedMagnitude()
     {
         return speed;
     }
-    public void SetEnemyController(EnemyController controller)
+    public Vector3 GetSpeed()
     {
-        enemyController = controller;
+        return moveDirection * speed;
+    }
+
+    public void SetIsControlled(bool value)
+    {
+        isControlled = value;
+    }
+
+    public void SetTarget(EnemyTarget target)
+    {
+        if (!isControlled)
+        {
+            Debug.LogError("Cannot set target to not controlled enemy");
+            return;
+        }
+        this.target = target;
+    }
+
+    public EnemyTargetIntention GetTargetIntention()
+    {
+        return targetIntention;
+    }
+
+    public float GetPlayerAgroRange()
+    {
+        return playerAgroRange;
+    }
+
+    public float GetTowerAgroRange()
+    {
+        return towerAgroRange;
+    }
+
+    public float GetTreeAgroRange()
+    {
+        return treeAgroRange;
+    }
+
+    public float GetTowerAvoidanceDistance()
+    {
+        return towerAvoidanceDistance;
     }
 }

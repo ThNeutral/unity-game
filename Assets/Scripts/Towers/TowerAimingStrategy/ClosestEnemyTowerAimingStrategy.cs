@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class ClosestEnemyTowerAimingStrategy : ITowerAimingStrategy
 {
-    public Dictionary<BaseTower, List<BaseEnemy>> GetTargets(Dictionary<BaseTower, bool> towers, Dictionary<BaseEnemy, bool> enemies)
+    public Dictionary<BaseTower, List<TowerTarget>> GetTargets(Dictionary<BaseTower, bool> towers, Dictionary<BaseEnemy, bool> enemies)
     {
-        Dictionary<BaseTower, List<BaseEnemy>> towerAssignments = new();
+        Dictionary<BaseTower, List<TowerTarget>> towerAssignments = new();
 
         foreach (var tower in towers.Keys)
         {
-            towerAssignments[tower] = new List<BaseEnemy>();
+            towerAssignments[tower] = new List<TowerTarget>();
         }
 
         foreach (var enemy in enemies.Keys)
@@ -30,9 +30,10 @@ public class ClosestEnemyTowerAimingStrategy : ITowerAimingStrategy
                 }
             }
 
-            if (bestTower != null)
+            if (bestTower != null && bestDistance < bestTower.GetShootRadius())
             {
-                towerAssignments[bestTower].Add(enemy);
+                var target = new TowerTarget { Position = enemy.transform.position, Speed = enemy.GetSpeed() };
+                towerAssignments[bestTower].Add(target);
             }
         }
 
