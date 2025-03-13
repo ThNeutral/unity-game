@@ -63,7 +63,7 @@ public class ClosestTowerEnemyAimingStrategy : IEnemyAimingStrategy
         {
             target = new EnemyTarget { Position = player.transform.position, Speed = Vector3.zero };
         } 
-        else if (distanceToClosestTower < enemy.GetTowerAgroRange() && closest != null)
+        else if (closest != null && distanceToClosestTower < enemy.GetTowerAgroRange())
         {
             target = new EnemyTarget { Position = closest.transform.position, Speed = Vector3.zero };
         }
@@ -119,8 +119,7 @@ public class ClosestTowerEnemyAimingStrategy : IEnemyAimingStrategy
             }
             
             //RIP BOZO
-            if (willBeInAttackRange && isInAttackRange) 
-                return new EnemyTarget { Position = enemy.transform.position, Speed = Vector3.zero };
+            if (willBeInAttackRange && isInAttackRange) return null;
         }
 
         return new EnemyTarget { Position = wiseTree.transform.position, Speed = Vector3.zero };
