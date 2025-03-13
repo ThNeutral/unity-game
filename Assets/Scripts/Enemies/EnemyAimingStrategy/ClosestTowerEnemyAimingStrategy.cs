@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
-public class ClosestTowerEnemyAimingStrategy : IEnemyAimingStrategy
+public class ClosestTowerEnemyAimingStrategy
 {
     public Dictionary<BaseEnemy, EnemyTarget> GetTargets(
+        NavigationProvider navigationProvider,
         Dictionary<BaseEnemy, bool> enemies,
         Dictionary<BaseTower, bool> towers,
         PlayerController player,
@@ -18,12 +20,12 @@ public class ClosestTowerEnemyAimingStrategy : IEnemyAimingStrategy
             {
                 case BaseEnemy.EnemyTargetIntention.Default:
                     {
-                        targets[enemy] = HandleDefaultIntention(enemy, towers, player, wiseTree);
+                        targets[enemy] = HandleDefaultIntention(navigationProvider, enemy, towers, player, wiseTree);
                         break;
                     }
                 case BaseEnemy.EnemyTargetIntention.KeepDistance:
                     {
-                        targets[enemy] = HandleKeepDistanceIntention(enemy, towers, player, wiseTree);
+                        targets[enemy] = HandleKeepDistanceIntention(navigationProvider, enemy, towers, player, wiseTree);
                         break;
                     }
             }
@@ -33,6 +35,7 @@ public class ClosestTowerEnemyAimingStrategy : IEnemyAimingStrategy
     }
 
     private EnemyTarget HandleDefaultIntention(
+        NavigationProvider navigationProvider,
         BaseEnemy enemy,
         Dictionary<BaseTower, bool> towers,
         PlayerController player,
@@ -55,9 +58,10 @@ public class ClosestTowerEnemyAimingStrategy : IEnemyAimingStrategy
         EnemyTarget target = null;
         float distanceToPlayer = Vector3.Distance(enemy.transform.position, player.transform.position);
         float distanceToWiseTree = Vector3.Distance(enemy.transform.position, wiseTree.transform.position);
+
         if (distanceToWiseTree < enemy.GetTreeAgroRange())
         {
-            target = new EnemyTarget { Position = wiseTree.transform.position, Speed = player.GetSpeed() };
+            target = new EnemyTarget { Position = wiseTree.transform.position, Speed = Vector3.zero };
         }
         else if (distanceToPlayer < enemy.GetPlayerAgroRange())
         {
@@ -72,56 +76,33 @@ public class ClosestTowerEnemyAimingStrategy : IEnemyAimingStrategy
             target = new EnemyTarget { Position = wiseTree.transform.position, Speed = Vector3.zero };
         }
 
-        return target;
+        return navigationProvider.GetNextPathNode(enemy, null, target);
     }
 
     private EnemyTarget HandleKeepDistanceIntention(
+        NavigationProvider navigationProvider,
         BaseEnemy enemy,
         Dictionary<BaseTower, bool> towers,
         PlayerController player,
-        WiseTree wiseTree
-        )
+        WiseTree wiseTree)
     {
         Vector3 enemyPos = enemy.transform.position;
-        Vector3 futureEnemyPos = enemy.transform.position + enemy.GetSpeed() * 5 * Time.deltaTime;
-        Vector3 escapeDirection = Vector3.zero;
+        Vector3 futureEnemyPos = enemyPos + enemy.GetSpeedDirection() * enemy.GetTowerAvoidanceDistance();
 
-        BaseTower closest = null;
-        float distanceToClosestTower = float.MaxValue;
+        BaseTower closestTower = null;
+        float closestTowerDistance = float.MaxValue;
 
         foreach (var tower in towers.Keys)
         {
-            float currentDistance = Vector3.Distance(enemy.transform.position, tower.transform.position);
-            if (currentDistance < distanceToClosestTower)
+            float currentDistance = Vector3.Distance(enemyPos, tower.transform.position);
+            if (currentDistance < closestTowerDistance)
             {
-                closest = tower;
-                distanceToClosestTower = currentDistance;
+                closestTower = tower;
+                closestTowerDistance = currentDistance;
             }
         }
 
-        if (closest != null) 
-        {
-            var isInAttackRange = (enemyPos - closest.transform.position).magnitude < closest.GetShootRadius();
-            var willBeInAttackRange = (futureEnemyPos - closest.transform.position).magnitude < closest.GetShootRadius();
-            
-            if (willBeInAttackRange && !isInAttackRange)
-            {
-                var directionToTower = enemyPos - closest.transform.position;
-                var targetLeft = (directionToTower.normalized + Vector3.Cross(directionToTower, -Vector3.up)).normalized;
-                var targetRight = (directionToTower.normalized + Vector3.Cross(directionToTower, -Vector3.up)).normalized;
-                
-                float distanceToLeft = (targetLeft - closest.transform.position).magnitude;
-                float distanceToRight = (targetRight - closest.transform.position).magnitude;
-
-                Vector3 target = distanceToLeft > distanceToRight ? targetLeft : targetRight;
-
-                return new EnemyTarget { Position = target, Speed = Vector3.zero };
-            }
-            
-            //RIP BOZO
-            if (willBeInAttackRange && isInAttackRange) return null;
-        }
-
-        return new EnemyTarget { Position = wiseTree.transform.position, Speed = Vector3.zero };
+        
+        return navigationProvider.GetNextPathNode(enemy, towers, new EnemyTarget { Position = wiseTree.transform.position });
     }
 }

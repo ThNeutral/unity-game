@@ -31,6 +31,9 @@ public class BaseEnemy : MonoBehaviour
     [SerializeField]
     protected float treeAgroRange = 10f;
 
+    [SerializeField]
+    protected float towerAvoidanceDistance = 3f;
+
     protected Vector3 moveDirection;
     protected EnemyTarget target;
     protected EnemyController enemyController;
@@ -122,5 +125,10 @@ public class BaseEnemy : MonoBehaviour
     public float GetTreeAgroRange()
     {
         return treeAgroRange;
+    }
+
+    public float GetTowerAvoidanceDistance()
+    {
+        return towerAvoidanceDistance;
     }
 }

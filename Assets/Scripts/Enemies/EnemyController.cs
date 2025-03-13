@@ -14,16 +14,18 @@ public class EnemyController : MonoBehaviour
 
     private TowerController towerController;
     private PlayerController playerController;
+    private NavigationProvider navigationProvider;
 
     private Dictionary<BaseEnemy, EnemyTarget> targets = new();
 
     private BaseSpawner defaultSpawner;
 
-    private IEnemyAimingStrategy aimingStrategy;
+    private ClosestTowerEnemyAimingStrategy aimingStrategy;
     // Start is called before the first frame update
     void Start()
     {
         aimingStrategy = new ClosestTowerEnemyAimingStrategy();
+        navigationProvider = FindFirstObjectByType<NavigationProvider>();
         playerController = FindFirstObjectByType<PlayerController>();
         towerController = FindObjectOfType<TowerController>();
 
@@ -35,6 +37,7 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         targets = aimingStrategy.GetTargets(
+            navigationProvider,
             GetInstantiatedEnemies(),
             towerController.GetInstantiatedTowers(),
             playerController,
