@@ -22,24 +22,28 @@ public class NavigationDataEditor : Editor
     private void SceneGUI(SceneView sv)
     {
         var navData = (NavigationData)target;
-
         if (navData.navPoints.Count == 0) return;
 
         Vector3 prev = Vector3.zero;
-
         using (new Handles.DrawingScope(drawColor))
         {
             for (int i = 0; i < navData.navPoints.Count; i++)
             {
-                var point = navData.navPoints[i];
-                Handles.DrawWireCube(point, Vector3.one * 0.5f);
-
-                if (i != 0)
+                EditorGUI.BeginChangeCheck();
+                Vector3 newPoint = Handles.PositionHandle(navData.navPoints[i], Quaternion.identity);
+                if (EditorGUI.EndChangeCheck())
                 {
-                    Handles.DrawLine(prev, point);
+                    Undo.RecordObject(navData, "Move Navigation Point");
+                    navData.navPoints[i] = newPoint;
+                    EditorUtility.SetDirty(navData);
                 }
 
-                prev = point;
+                Handles.DrawWireCube(navData.navPoints[i], Vector3.one * 0.5f);
+                if (i != 0)
+                {
+                    Handles.DrawLine(prev, navData.navPoints[i]);
+                }
+                prev = navData.navPoints[i];
             }
         }
     }
