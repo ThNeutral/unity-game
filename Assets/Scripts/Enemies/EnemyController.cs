@@ -45,7 +45,7 @@ public class EnemyController : MonoBehaviour
         return closestEnemy;
     }
 
-    public List<Vector3> GetRoute(Vector3 startPos)
+    public List<NavigationPoint> GetRoute(Vector3 startPos)
     {
         return navigationProvider.GetRemainingRoute(startPos);
     }

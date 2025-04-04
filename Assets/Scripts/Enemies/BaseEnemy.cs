@@ -18,7 +18,7 @@ public class BaseEnemy : MonoBehaviour
     private LootController lootController;
     private EnemyController enemyController;
 
-    private List<Vector3> route;
+    private List<NavigationPoint> route;
 
     // Start is called before the first frame update
     void Start()
@@ -32,18 +32,41 @@ public class BaseEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CalculateNextDirection();
         Move();
+    }
+
+    private void CalculateNextDirection()
+    {
+        if (route.Count == 0)
+        {
+            moveDirection = Vector3.zero;
+            return;
+        }
+
+        var point = route[0];
+        while (route.Count > 0 && point.Contains(transform.position))
+        {
+            route.RemoveAt(0);
+            if (route.Count == 0)
+            {
+                moveDirection = Vector3.zero;
+                return;
+            }
+            point = route[0];
+        }
+
+        if (route.Count == 0)
+        {
+            moveDirection = Vector3.zero;
+            return;
+        }
+
+        moveDirection = point.DirectionWithLock(transform.position);
     }
 
     private void Move()
     {
-        if (route.Count == 0) return;
-        if (Vector3.Distance(transform.position, route[0]) < 0.5f)
-        {
-            route.RemoveAt(0);
-            if (route.Count == 0) return;
-        }
-        moveDirection = (route[0] - transform.position).normalized;
         transform.position += speed * Time.deltaTime * moveDirection;
     }
 

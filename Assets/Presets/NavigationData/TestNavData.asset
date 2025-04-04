@@ -13,7 +13,31 @@ MonoBehaviour:
   m_Name: TestNavData
   m_EditorClassIdentifier: 
   navPoints:
-  - {x: -2.5523176, y: -0.7251792, z: -5}
-  - {x: -10.659214, y: -0.86693335, z: 2}
-  - {x: -16.423786, y: -0.3452881, z: -5}
-  - {x: -15.502003, y: -0.7067019, z: 2}
+  - lockedAxes:
+      x: 0
+      y: 0
+      z: 0
+    size: {x: 1, y: 1, z: 1}
+    position: {x: 0, y: 0, z: 4.3142605}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  - lockedAxes:
+      x: 0
+      y: 1
+      z: 0
+    size: {x: 1, y: 20000, z: 1}
+    position: {x: -4.8859673, y: 0, z: -4.7343407}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  - lockedAxes:
+      x: 0
+      y: 0
+      z: 0
+    size: {x: 1, y: 1, z: 1}
+    position: {x: -6.983191, y: -0.43457818, z: 0}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  - lockedAxes:
+      x: 0
+      y: 0
+      z: 1
+    size: {x: 20, y: 1, z: 20000}
+    position: {x: -23.83355, y: -0.5285778, z: 0}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
