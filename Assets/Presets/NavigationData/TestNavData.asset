@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 279ea7e7b016b4dfd8daeda603add138, type: 3}
+  m_Name: TestNavData
+  m_EditorClassIdentifier: 
+  navPoints:
+  - lockedAxes:
+      x: 0
+      y: 0
+      z: 0
+    size: {x: 1, y: 1, z: 1}
+    position: {x: 0, y: 0, z: 4.3142605}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  - lockedAxes:
+      x: 0
+      y: 1
+      z: 0
+    size: {x: 1, y: 20000, z: 1}
+    position: {x: -4.8859673, y: 0, z: -4.7343407}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  - lockedAxes:
+      x: 0
+      y: 0
+      z: 0
+    size: {x: 1, y: 1, z: 1}
+    position: {x: -6.983191, y: -0.43457818, z: 0}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  - lockedAxes:
+      x: 0
+      y: 0
+      z: 1
+    size: {x: 20, y: 1, z: 20000}
+    position: {x: -23.83355, y: -0.5285778, z: 0}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}

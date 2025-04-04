@@ -25,28 +25,37 @@ public class BaseTower : MonoBehaviour
 
     private float counter;
 
-    private LootController lootController;
-    private EnemyController enemyController;
     private TowerController towerController;
 
+    private BaseEnemy target;
     // Start is called before the first frame update
     void Start()
     {
-        lootController = FindFirstObjectByType<LootController>();
+        towerController = FindFirstObjectByType<TowerController>();
     }
+
     void Update()
     {
+        HandleAim();
         HandleLivingTower();
     }
+
+    private void HandleAim()
+    {
+        if (!IsValidTarget())
+        {
+            target = towerController.GetTarget(this);
+        }
+    }
+
     private void HandleLivingTower()
     {
         counter += Time.deltaTime;
         while (counter > shootSpeed)
         {
-            var target = towerController.GetTarget(this);
-            if (target != null)
+            if (IsValidTarget())
             {
-                ShootAt(target);
+                Shoot();
                 counter -= shootSpeed;
             }
             else
@@ -55,19 +64,17 @@ public class BaseTower : MonoBehaviour
             }
         }
     }
-    public void SetEnemyController(EnemyController controller) 
+
+    private bool IsValidTarget()
     {
-        enemyController = controller;
+        return target != null && Vector3.Distance(target.transform.position, transform.position) < maximumRange;
     }
-    public void SetTowerController(TowerController controller)
+
+    public void Shoot()
     {
-        towerController = controller;
-    }
-    public void ShootAt(BaseEnemy enemyBehaviour)
-    {
-        var enemyMoveDirection = enemyBehaviour.GetMoveDirection();
-        var enemySpeed = enemyBehaviour.GetSpeed();
-        var enemyPosition = enemyBehaviour.transform.position;
+        var enemyMoveDirection = target.GetMoveDirection();
+        var enemySpeed = target.GetSpeed();
+        var enemyPosition = target.transform.position;
         var selfPosition = transform.position;
 
         var estimatedFlightTime = (enemyPosition - selfPosition).magnitude / projectileSpeed;
@@ -87,7 +94,6 @@ public class BaseTower : MonoBehaviour
         projectileBehaviour.SetDirection(direction);
         projectileBehaviour.SetSpeed(projectileSpeed);
         projectileBehaviour.SetDamage(damage);
-        projectileBehaviour.SetEnemyController(enemyController);
         projectileBehaviour.SetMaximumRange(maximumRange);
     }
 }

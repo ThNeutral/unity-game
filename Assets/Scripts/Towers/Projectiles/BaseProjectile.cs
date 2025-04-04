@@ -6,14 +6,36 @@ using UnityEngine;
 public class BaseProjectile : MonoBehaviour
 {
     private Vector3 direction;
+    public void SetDirection(Vector3 dir)
+    {
+        direction = dir;
+    }
+
     private float speed;
+    public void SetSpeed(float s)
+    {
+        speed = s;
+    }
+
     private int damage;
-    private EnemyController enemyController;
+    public void SetDamage(int d)
+    {
+        damage = d;
+    }
+
     private float maximumRange;
+    public void SetMaximumRange(float range)
+    {
+        maximumRange = range;
+    }
+
     private Vector3 startingPosition;
+    private EnemyController enemyController;
+
     // Start is called before the first frame update
     void Start()
     {
+        enemyController = FindFirstObjectByType<EnemyController>();
         startingPosition = transform.position;
     }
 
@@ -34,25 +56,5 @@ public class BaseProjectile : MonoBehaviour
             enemyController.DealDamageTo(enemy, damage);
             Destroy(gameObject);
         }
-    }
-    public void SetSpeed(float s)
-    {
-        speed = s;
-    }
-    public void SetDirection(Vector3 dir)
-    {
-        direction = dir;
-    }
-    public void SetDamage(int d)
-    {
-        damage = d;
-    }
-    public void SetEnemyController(EnemyController controller)
-    {
-        enemyController = controller;
-    }
-    public void SetMaximumRange(float range)
-    {
-        maximumRange = range;
     }
 }
