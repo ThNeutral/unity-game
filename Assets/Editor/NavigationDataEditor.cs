@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System.Linq;
 
 [CustomEditor(typeof(NavigationData))]
 public class NavigationDataEditor : Editor
@@ -56,20 +57,22 @@ public class NavigationDataEditor : Editor
     {
         var data = (NavigationData)target;
 
-        if (GUILayout.Button("Add Nav Point"))
-        {
-            data.navPoints.Add(new NavigationPoint());
-        }
-
-        if (GUILayout.Button("Clear Nav Points"))
-        {
-            data.navPoints.Clear();
-        }
-
+        var options = data.navPoints.Select((_, index) => index.ToString()).ToArray();
         for (int i = 0; i < data.navPoints.Count; i++)
         {
             var point = data.navPoints[i];
-            EditorGUILayout.LabelField("Nav Point " + i, EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Nav Point ", EditorStyles.boldLabel, GUILayout.Width(70));
+            var newI = EditorGUILayout.Popup(i, options, GUILayout.Width(40));
+            if (newI != i)
+            {
+                (data.navPoints[newI], data.navPoints[i]) = (data.navPoints[i], data.navPoints[newI]);  
+            }
+            if (GUILayout.Button("Delete"))
+            {
+                data.navPoints.RemoveAt(i);
+            }
+            EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Locked Axes", GUILayout.Width(100));
@@ -142,6 +145,16 @@ public class NavigationDataEditor : Editor
             {
                 EditorGUILayout.Space(10);
             }
+        }
+
+        if (GUILayout.Button("Add Nav Point"))
+        {
+            data.navPoints.Add(new NavigationPoint());
+        }
+
+        if (GUILayout.Button("Clear Nav Points"))
+        {
+            data.navPoints.Clear();
         }
     }
 }
