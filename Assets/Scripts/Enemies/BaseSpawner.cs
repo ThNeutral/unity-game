@@ -10,17 +10,21 @@ public class BaseSpawner : MonoBehaviour
     private Bounds spawnZone;
     [SerializeField] 
     private Bounds spawnExclusionZone;
+
     [SerializeField]
     private float spawnDelay = 0.2f;
+    private float counter = 0f;
+
     [SerializeField]
     private GameObject enemy;
 
     private EnemyController enemyController;
     private Dictionary<BaseEnemy, bool> instantiatedEnemies = new();
-    private float counter = 0f;
+
     // Start is called before the first frame update
     void Start()
     {
+        enemyController = FindFirstObjectByType<EnemyController>();
     }
     // Update is called once per frame
     void Update()
@@ -60,8 +64,6 @@ public class BaseSpawner : MonoBehaviour
         var instantiatedEnemy = Instantiate(enemy, clonePosition, cloneRotation);
         var behavoiur = instantiatedEnemy.GetComponent<BaseEnemy>();
 
-        behavoiur.SetEnemyController(enemyController);
-
         instantiatedEnemies[behavoiur] = true;
 
         counter = 0;
@@ -78,15 +80,10 @@ public class BaseSpawner : MonoBehaviour
     {
         if (instantiatedEnemies.ContainsKey(enemy))
         {
-            var isDestroyed = enemy.DealDamage(damage);
-            if (isDestroyed) 
+            if (enemy.ReceiveDamage(damage)) 
             { 
                 instantiatedEnemies.Remove(enemy);
             }
         }
-    }
-    public void SetEnemyController(EnemyController controller)
-    {
-        enemyController = controller;
     }
 }

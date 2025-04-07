@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: select
 public class GhostTowerController : MonoBehaviour
 {
     private GameObject ghostTower;
