@@ -27,6 +27,7 @@ public class BaseEnemy : MonoBehaviour
         enemyController = FindFirstObjectByType<EnemyController>();
 
         route = enemyController.GetRoute(transform.position);
+        
     }
 
     // Update is called once per frame

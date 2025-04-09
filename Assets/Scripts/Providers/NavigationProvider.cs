@@ -8,8 +8,14 @@ public class NavigationProvider : MonoBehaviour
 
     public List<NavigationPoint> GetRemainingRoute(Vector3 from)
     {
+        AssertNavDataIsNotNull();
         var (_, index) = GetClosestNavPoint(from);
         return navData.navPoints.Skip(index).ToList();
+    }
+
+    private void AssertNavDataIsNotNull()
+    {
+        Assertion.NotNull(navData, "Navigation Data was not set. Check Navigation Provider.");
     }
 
     private (NavigationPoint pos, int index) GetClosestNavPoint(Vector3 target)
