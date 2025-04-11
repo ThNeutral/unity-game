@@ -15,6 +15,9 @@ public class BaseTower : MonoBehaviour
     private float shootSpeed = 0.02f;
 
     [SerializeField]
+    private int hp = 10;
+
+    [SerializeField]
     private int damage = 1;
 
     [SerializeField]
@@ -68,6 +71,17 @@ public class BaseTower : MonoBehaviour
     private bool IsValidTarget()
     {
         return target != null && Vector3.Distance(target.transform.position, transform.position) < maximumRange;
+    }
+
+    public bool RecieveDamage(int damage)
+    {
+        hp -= damage;
+        if (hp <= 0)
+        {
+            Destroy(gameObject);
+            return true;
+        }
+        return false;
     }
 
     public void Shoot()
