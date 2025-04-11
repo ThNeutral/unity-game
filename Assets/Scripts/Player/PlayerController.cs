@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField]
+    private int hp = 10;
+
     public float Speed;
 
     public Transform orientation;
@@ -105,5 +108,16 @@ public class PlayerController : MonoBehaviour
         {
             lootController.PickUpExperienceBlob(experience);
         }
+    }
+
+    public bool RecieveDamage(int damage)
+    {
+        hp -= damage;
+        if (hp <= 0)
+        {
+            // Handle Death
+            return true;
+        }
+        return false;
     }
 }

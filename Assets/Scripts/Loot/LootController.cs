@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class LootController : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject experiencePrefab;
-
     private long experience = 0;
     private long experienceBuffer = 0;
 
@@ -52,7 +49,7 @@ public class LootController : MonoBehaviour
         experience += experienceBuffer;
         experienceBuffer = 0;
     }
-    public void InstantiateExperienceBlob(Vector3 position, Quaternion rotation)
+    public void InstantiateExperienceBlob(GameObject experiencePrefab, Vector3 position, Quaternion rotation)
     {
         experiences.Add(Instantiate(experiencePrefab, position, rotation).GetComponentInChildren<Experience>(), false);
     }

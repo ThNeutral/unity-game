@@ -10,12 +10,36 @@ public class EnemyController : MonoBehaviour
     private Dictionary<BaseSpawner, bool> instantiatedSpawners = new();
 
     private NavigationProvider navigationProvider;
-
+    private TowerController towerController;
+    private PlayerController playerController;
     // Start is called before the first frame update
     void Start()
     {
+        towerController = FindFirstObjectByType<TowerController>();
         navigationProvider = FindFirstObjectByType<NavigationProvider>();
-        PlaceSpawner(Vector3.zero, Quaternion.identity);
+        playerController = FindFirstObjectByType<PlayerController>();
+        PlaceSpawner(Vector3.up * 5, Quaternion.identity);
+    }
+
+    public List<MonoBehaviour> DealDamageInArea(Vector3 center, float radius, int damage)
+    {
+        var towers = towerController.GetTowersInSphere(center, radius);
+        var destroyed = new List<MonoBehaviour>();
+        foreach (var tower in towers)
+        {
+            if (tower.RecieveDamage(damage))
+            {
+                destroyed.Add(tower);
+            }
+        }
+        if (Vector3.Distance(playerController.transform.position, center) < radius)
+        {
+            if (playerController.RecieveDamage(damage))
+            {
+                destroyed.Add(playerController);
+            }
+        }
+        return destroyed;
     }
 
     public Dictionary<BaseEnemy, bool> GetInstantiatedEnemies()
