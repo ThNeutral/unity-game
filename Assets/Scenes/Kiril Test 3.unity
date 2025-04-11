@@ -742,7 +742,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b9d018f1186c364c8acac9d7c036adc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  experiencePrefab: {fileID: 7692061198324483170, guid: 79f17addeb574d84eb7d310a72f14ac0, type: 3}
   mergeRadius: 10
 --- !u!4 &748193767
 Transform:
@@ -1236,7 +1235,7 @@ Transform:
   m_GameObject: {fileID: 1294920854}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.29, y: 0, z: 0}
+  m_LocalPosition: {x: 33.44, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1.15, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1257,6 +1256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02860d61271ff714e9731146eea106d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hp: 10
   Speed: 10
   orientation: {fileID: 1959073391}
   playerHeight: 2

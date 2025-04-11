@@ -36,8 +36,8 @@ MonoBehaviour:
     color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   - lockedAxes:
       x: 0
-      y: 0
-      z: 1
-    size: {x: 20, y: 1, z: 20000}
-    position: {x: -23.83355, y: -0.5285778, z: 0}
+      y: 1
+      z: 0
+    size: {x: 1, y: 20000, z: 1}
+    position: {x: -31.780533, y: 0, z: -15.78377}
     color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
