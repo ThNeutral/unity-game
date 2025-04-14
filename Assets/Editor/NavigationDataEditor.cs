@@ -70,6 +70,7 @@ public class NavigationDataEditor : Editor
             if (GUILayout.Button("Delete"))
             {
                 data.navPoints.RemoveAt(i);
+                break;
             }
             EditorGUILayout.EndHorizontal();
 
@@ -138,8 +139,6 @@ public class NavigationDataEditor : Editor
 
             EditorGUILayout.EndHorizontal();
 
-            EditorUtility.SetDirty(target);
-
             if (i != data.navPoints.Count - 1)
             {
                 EditorGUILayout.Space(10);
@@ -155,5 +154,8 @@ public class NavigationDataEditor : Editor
         {
             data.navPoints.Clear();
         }
+
+        serializedObject.ApplyModifiedProperties();
+        EditorUtility.SetDirty(target);
     }
 }

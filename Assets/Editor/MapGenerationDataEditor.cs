@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using UnityEditor.Rendering.PostProcessing;
 
 [CustomEditor(typeof(MapGenerationData))]
 public class MapGenerationDataEditor : Editor
@@ -14,20 +15,27 @@ public class MapGenerationDataEditor : Editor
         mapGenerationData.navigationData = NestedEditor(
             mapGenerationData.navigationData,
             ref navigationDataEditor,
-            "Navigation Data"
+            "Navigation Data",
+            out bool hasNavigationDataChanged
             );
 
         mapGenerationData.spawnerGenerationData = NestedEditor(
             mapGenerationData.spawnerGenerationData,
             ref spawnerGenerationDataEditor,
-            "Spawner Generation Data"
+            "Spawner Generation Data",
+            out bool hasSpawnGenerationDataChanged
             );
+
+        serializedObject.ApplyModifiedProperties();
+        EditorUtility.SetDirty(target);
+
     }
 
-    private SO NestedEditor<SO, E>(SO oldSO, ref E editor, string label)
+    private SO NestedEditor<SO, E>(SO oldSO, ref E editor, string label, out bool hasChanged)
         where SO : ScriptableObject
         where E : Editor 
     {
+        hasChanged = false;
         var newSO = (SO)EditorGUILayout.ObjectField(label, oldSO, typeof(SO), true);
         if (newSO == null)
         {
@@ -40,10 +48,12 @@ public class MapGenerationDataEditor : Editor
         }
         else if (editor == null && newSO != null) 
         {
+            hasChanged = true;
             editor = (E)CreateEditor(newSO);
         }
         else if (newSO != oldSO)
         {
+            hasChanged = true;
             if (editor != null)
             {
                 DestroyImmediate(editor);

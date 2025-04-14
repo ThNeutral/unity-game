@@ -53,6 +53,7 @@ public class SpawnerGenerationDataEditor : Editor
             if (GUILayout.Button("Delete"))
             {
                 generationData.generationPoints.RemoveAt(i);
+                break;
             }
             EditorGUILayout.EndHorizontal();
 
@@ -67,12 +68,12 @@ public class SpawnerGenerationDataEditor : Editor
             if (newPrefab != null && newPrefab.GetComponentInChildren<BaseSpawner>() != null)
             {
                 generationPoint.prefab = newPrefab;
+
             }
             else
             {
                 EditorGUILayout.HelpBox("Prefab must be set and contain BaseSpawner in its children", MessageType.Warning);
             }
-
         }
 
         if (GUILayout.Button("Add Generation Points"))
@@ -84,5 +85,8 @@ public class SpawnerGenerationDataEditor : Editor
         {
             generationData.generationPoints.Clear();
         }
+
+        serializedObject.ApplyModifiedProperties();
+        EditorUtility.SetDirty(target);
     }
 }

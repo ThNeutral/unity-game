@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
-[SerializeField]
+[Serializable]
 public class SpawnerGenerationPoint
 {
     public GameObject prefab;

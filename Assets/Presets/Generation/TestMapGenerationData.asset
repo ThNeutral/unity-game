@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04cc2a0fcc15e44088f92629ee22a44d, type: 3}
   m_Name: TestMapGenerationData
   m_EditorClassIdentifier: 
-  navigationData: {fileID: 0}
-  SpawnerGenerationData: {fileID: 0}
+  navigationData: {fileID: 11400000, guid: b60afc12ef6674bfbb266819ca87564c, type: 2}
+  spawnerGenerationData: {fileID: 11400000, guid: 1ad3f93f9d10d47c09d5b40ff76f91d8, type: 2}
