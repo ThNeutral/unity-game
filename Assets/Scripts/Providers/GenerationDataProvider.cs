@@ -9,7 +9,7 @@ public class GenerationDataProvider : MonoBehaviour
     [SerializeField]
     private MapGenerationData mapGenerationData;
 
-    private void Start()
+    private void Awake()
     {
         NavigationProvider = new();
         NavigationProvider.navData = mapGenerationData.navigationData;
