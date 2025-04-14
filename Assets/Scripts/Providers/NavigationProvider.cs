@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class NavigationProvider : MonoBehaviour
+public class NavigationProvider
 {
     public NavigationData navData;
 

@@ -9,16 +9,24 @@ public class EnemyController : MonoBehaviour
 
     private Dictionary<BaseSpawner, bool> instantiatedSpawners = new();
 
-    private NavigationProvider navigationProvider;
+    private GenerationDataProvider generationDataProvider;
     private TowerController towerController;
     private PlayerController playerController;
     // Start is called before the first frame update
     void Start()
     {
         towerController = FindFirstObjectByType<TowerController>();
-        navigationProvider = FindFirstObjectByType<NavigationProvider>();
+        generationDataProvider = FindFirstObjectByType<GenerationDataProvider>();
         playerController = FindFirstObjectByType<PlayerController>();
-        PlaceSpawner(Vector3.up * 5, Quaternion.identity);
+        GenerateSpawners();
+    }
+
+    public void GenerateSpawners()
+    {
+        foreach (var spawnerPoint in generationDataProvider.SpawnerGenerationData.generationPoints)
+        {
+            PlaceSpawner(spawnerPoint.prefab, spawnerPoint.position, Quaternion.identity);
+        }
     }
 
     public List<MonoBehaviour> DealDamageInArea(Vector3 center, float radius, int damage)
@@ -71,7 +79,7 @@ public class EnemyController : MonoBehaviour
 
     public List<NavigationPoint> GetRoute(Vector3 startPos)
     {
-        return navigationProvider.GetRemainingRoute(startPos);
+        return generationDataProvider.NavigationProvider.GetRemainingRoute(startPos);
     }
 
     public void DealDamageTo(BaseEnemy enemy, int damage)
