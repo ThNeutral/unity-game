@@ -7,20 +7,18 @@ using System.Linq;
 [CustomEditor(typeof(NavigationData))]
 public class NavigationDataEditor : Editor
 {
-    private Color drawColor = Color.yellow;
-
     private void OnEnable()
     {
-        SceneView.duringSceneGui -= SceneGUI;
-        SceneView.duringSceneGui += SceneGUI;
+        SceneView.duringSceneGui -= OnSceneGUI;
+        SceneView.duringSceneGui += OnSceneGUI;
     }
 
     private void OnDestroy()
     {
-        SceneView.duringSceneGui -= SceneGUI;
+        SceneView.duringSceneGui -= OnSceneGUI;
     }
 
-    private void SceneGUI(SceneView sv)
+    private void OnSceneGUI(SceneView sv)
     {
         var navData = (NavigationData)target;
         if (navData.navPoints.Count == 0) return;
@@ -61,6 +59,7 @@ public class NavigationDataEditor : Editor
         for (int i = 0; i < data.navPoints.Count; i++)
         {
             var point = data.navPoints[i];
+
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Nav Point ", EditorStyles.boldLabel, GUILayout.Width(70));
             var newI = EditorGUILayout.Popup(i, options, GUILayout.Width(40));
