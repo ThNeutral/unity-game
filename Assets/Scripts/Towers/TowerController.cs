@@ -25,6 +25,38 @@ public class TowerController : MonoBehaviour
         return enemyController.GetClosestEnemy(tower.transform.position);
     }
 
+    public (BaseTower tower, float distance) GetClosestTower(Vector3 point)
+    {
+        BaseTower closestTower = null;
+        float closestDistance = float.MaxValue;
+        foreach (var tower in instantiatedTowers.Keys)
+        {
+            float distance = Vector3.Distance(tower.transform.position, point);
+            if (distance < closestDistance)
+            {
+                closestTower = tower;
+                closestDistance = distance;
+            }
+        }
+        return (closestTower, closestDistance);    
+    }
+
+    public List<BaseTower> GetTowersInSphere(Vector3 center, float radius)
+    {
+        List<BaseTower> towersInRange = new List<BaseTower>();
+
+        foreach (var tower in instantiatedTowers.Keys)
+        {
+            float distance = Vector3.Distance(tower.transform.position, center);
+            if (distance <= radius)
+            {
+                towersInRange.Add(tower);
+            }
+        }
+
+        return towersInRange;
+    }
+
     public Dictionary<BaseTower, bool> GetInstantiatedTowers()
     {
         return instantiatedTowers;

@@ -21,6 +21,10 @@ public class BaseSpawner : MonoBehaviour
     private EnemyController enemyController;
     private Dictionary<BaseEnemy, bool> instantiatedEnemies = new();
 
+    [SerializeField]
+    private int maxNumberOfSpawns = 5;
+    private int currentNumberOfSpawns;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,6 +42,8 @@ public class BaseSpawner : MonoBehaviour
     }
     public void SpawnEnemy()
     {
+        if (maxNumberOfSpawns != -1 && currentNumberOfSpawns >= maxNumberOfSpawns) return;
+        currentNumberOfSpawns += 1;
         const int maxCount = 100;
         int count = 0;
         Vector3 spawnPoint;
