@@ -7,6 +7,7 @@ using System.Linq;
 [CustomEditor(typeof(NavigationData))]
 public class NavigationDataEditor : Editor
 {
+    private EnemyType selectedEnemyType = EnemyType.BASE;
     private void OnEnable()
     {
         SceneView.duringSceneGui -= OnSceneGUI;
@@ -21,12 +22,13 @@ public class NavigationDataEditor : Editor
     private void OnSceneGUI(SceneView sv)
     {
         var navData = (NavigationData)target;
-        if (navData.navPoints.Count == 0) return;
+        var path = navData.paths.FirstOrDefault(p => p.type == selectedEnemyType);
+        if (path == null) return;
 
         Vector3 prev = Vector3.zero;
-        for (int i = 0; i < navData.navPoints.Count; i++)
+        for (int i = 0; i < path.path.Count; i++)
         {
-            var navPoint = navData.navPoints[i];
+            var navPoint = path.path[i];
             using (new Handles.DrawingScope(navPoint.color))
             {
                 EditorGUI.BeginChangeCheck();
@@ -54,22 +56,30 @@ public class NavigationDataEditor : Editor
     public override void OnInspectorGUI()
     {
         var data = (NavigationData)target;
+        selectedEnemyType = (EnemyType)EditorGUILayout.EnumPopup("Select Enemy Type", selectedEnemyType);
 
-        var options = data.navPoints.Select((_, index) => index.ToString()).ToArray();
-        for (int i = 0; i < data.navPoints.Count; i++)
+        var path = data.paths.FirstOrDefault(p => p.type == selectedEnemyType);
+        if (path == null)
         {
-            var point = data.navPoints[i];
+            path = new NavigationPath() { path = new(), type = selectedEnemyType };
+            data.paths.Add(path);
+        }
+
+        var options = path.path.Select((_, index) => index.ToString()).ToArray();
+        for (int i = 0; i < path.path.Count; i++)
+        {
+            var point = path.path[i];
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Nav Point ", EditorStyles.boldLabel, GUILayout.Width(70));
             var newI = EditorGUILayout.Popup(i, options, GUILayout.Width(40));
             if (newI != i)
             {
-                (data.navPoints[newI], data.navPoints[i]) = (data.navPoints[i], data.navPoints[newI]);  
+                (data.paths[newI], data.paths[i]) = (data.paths[i], data.paths[newI]);  
             }
             if (GUILayout.Button("Delete"))
             {
-                data.navPoints.RemoveAt(i);
+                data.paths.RemoveAt(i);
                 break;
             }
             EditorGUILayout.EndHorizontal();
@@ -139,7 +149,7 @@ public class NavigationDataEditor : Editor
 
             EditorGUILayout.EndHorizontal();
 
-            if (i != data.navPoints.Count - 1)
+            if (i != data.paths.Count - 1)
             {
                 EditorGUILayout.Space(10);
             }
@@ -147,12 +157,12 @@ public class NavigationDataEditor : Editor
 
         if (GUILayout.Button("Add Nav Point"))
         {
-            data.navPoints.Add(new NavigationPoint());
+            path.path.Add(new NavigationPoint());
         }
 
         if (GUILayout.Button("Clear Nav Points"))
         {
-            data.navPoints.Clear();
+            path.path.Clear();
         }
 
         serializedObject.ApplyModifiedProperties();

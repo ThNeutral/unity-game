@@ -48,6 +48,7 @@ public class Golem : BaseEnemy
 
     private bool isDead = false;
 
+    public override EnemyType Type => EnemyType.GOLEM;
     private new void Start()
     {
         base.Start();

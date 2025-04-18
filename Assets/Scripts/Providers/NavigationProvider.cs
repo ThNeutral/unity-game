@@ -6,11 +6,18 @@ public class NavigationProvider
 {
     public NavigationData navData;
 
-    public List<NavigationPoint> GetRemainingRoute(Vector3 from)
+    public List<NavigationPoint> GetRemainingRoute(EnemyType type, Vector3 from)
     {
         AssertNavDataIsNotNull();
-        var (_, index) = GetClosestNavPoint(from);
-        return navData.navPoints.Skip(index).ToList();
+        var path = navData.paths.FirstOrDefault(p => p.type == type);
+        if (path == null)
+        {
+            Debug.LogError("No path found for enemy type " + type.ToString());
+            return new();
+        }
+        var (_, index) = GetClosestNavPoint(path.path, from);
+        if (index == -1) return new();
+        return path.path.Skip(index).ToList();
     }
 
     private void AssertNavDataIsNotNull()
@@ -18,20 +25,20 @@ public class NavigationProvider
         Assertion.NotNull(navData, "Navigation Data was not set. Check Navigation Provider.");
     }
 
-    private (NavigationPoint pos, int index) GetClosestNavPoint(Vector3 target)
+    private (NavigationPoint pos, int index) GetClosestNavPoint(List<NavigationPoint> path, Vector3 target)
     {
-        if (navData.navPoints.Count == 0)
+        if (path.Count == 0)
         {
             Debug.LogError("Nav Data is empty");
             return (new NavigationPoint(), -1);
         }
 
         var closestPointIndex = 0;
-        var closestPoint = navData.navPoints[0];
+        var closestPoint = path[0];
         var closestDist = Vector3.Distance(closestPoint.position, target);
-        for (int i = 1; i < navData.navPoints.Count - 1; i++)
+        for (int i = 1; i < path.Count - 1; i++)
         {
-            var point = navData.navPoints[i];
+            var point = path[i];
             var dist = Vector3.Distance(target, point.position);
             if (dist < closestDist)
             {

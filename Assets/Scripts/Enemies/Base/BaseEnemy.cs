@@ -32,6 +32,8 @@ public class BaseEnemy : MonoBehaviour
     protected bool isInAgro = false;
     protected MonoBehaviour target;
 
+    public virtual EnemyType Type => EnemyType.BASE;
+
     // Start is called before the first frame update
     protected void Start()
     {
@@ -40,7 +42,7 @@ public class BaseEnemy : MonoBehaviour
         enemyController = FindFirstObjectByType<EnemyController>();
         towerController = FindFirstObjectByType<TowerController>();
 
-        route = enemyController.GetRoute(transform.position);
+        route = enemyController.GetRoute(Type, transform.position);
     }
 
     // Update is called once per frame
@@ -79,7 +81,7 @@ public class BaseEnemy : MonoBehaviour
         if (!newIsInAgro && isInAgro)
         {
             isInAgro = false;
-            route = enemyController.GetRoute(transform.position);
+            route = enemyController.GetRoute(Type, transform.position);
             target = null;
         }
 

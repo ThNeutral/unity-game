@@ -77,9 +77,9 @@ public class EnemyController : MonoBehaviour
         return closestEnemy;
     }
 
-    public List<NavigationPoint> GetRoute(Vector3 startPos)
+    public List<NavigationPoint> GetRoute(EnemyType type, Vector3 startPos)
     {
-        return generationDataProvider.NavigationProvider.GetRemainingRoute(startPos);
+        return generationDataProvider.NavigationProvider.GetRemainingRoute(type, startPos);
     }
 
     public void DealDamageTo(BaseEnemy enemy, int damage)
