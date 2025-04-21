@@ -1,3 +1,4 @@
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -15,10 +16,10 @@ public class BaseEnemy : MonoBehaviour
     protected GameObject experiencePrefab;
 
     [SerializeField]
-    protected float towerAgroRadius = 5;
+    protected float towerInteractionRadius = 5;
 
     [SerializeField]
-    protected float playerAgroRadius = 1;
+    protected float playerInteractionRadius = 1;
 
     protected Vector3 moveDirection;
 
@@ -32,38 +33,50 @@ public class BaseEnemy : MonoBehaviour
     protected bool isInAgro = false;
     protected MonoBehaviour target;
 
-    public virtual EnemyType Type => EnemyType.BASE;
+    public virtual EnemyType Type => EnemyType.Base;
 
     // Start is called before the first frame update
     protected void Start()
+    {
+        HandleInitialize();
+        HandleInitialRoute();
+    }
+
+    protected virtual void HandleInitialize()
     {
         playerController = FindFirstObjectByType<PlayerController>();
         lootController = FindFirstObjectByType<LootController>();
         enemyController = FindFirstObjectByType<EnemyController>();
         towerController = FindFirstObjectByType<TowerController>();
+    }
 
+    protected virtual void HandleInitialRoute()
+    {
         route = enemyController.GetRoute(Type, transform.position);
     }
 
     // Update is called once per frame
     protected void Update()
     {
+        if (!HandleUniqueMove())
+        {
+            HandleRoute();
+        }
         HandleMove();
-        HandleAttack();
+        HandleAсtion();
     }
-
-    protected virtual void HandleMove()
+    protected virtual bool HandleUniqueMove()
     {
         var newIsInAgro = false;
         var (tower, towerDistance) = towerController.GetClosestTower(transform.position);
-        if (towerDistance < towerAgroRadius)
+        if (towerDistance < towerInteractionRadius)
         {
             newIsInAgro = true;
             target = tower;
         }
 
         var playerDistance = Vector3.Distance(playerController.transform.position, transform.position);
-        if (playerDistance < playerAgroRadius)
+        if (playerDistance < playerInteractionRadius)
         {
             newIsInAgro = true;
             target = playerController;
@@ -75,7 +88,7 @@ public class BaseEnemy : MonoBehaviour
             moveDirection = (target.transform.position - transform.position).normalized;
             transform.position += speed * Time.deltaTime * moveDirection;
             transform.rotation = Quaternion.LookRotation(moveDirection);
-            return;
+            return true;
         }
 
         if (!newIsInAgro && isInAgro)
@@ -85,6 +98,11 @@ public class BaseEnemy : MonoBehaviour
             target = null;
         }
 
+        return false;
+    }
+
+    protected virtual void HandleRoute()
+    {
         if (route.Count == 0)
         {
             moveDirection = Vector3.zero;
@@ -110,11 +128,18 @@ public class BaseEnemy : MonoBehaviour
         }
 
         moveDirection = point.DirectionWithLock(transform.position);
-        transform.rotation = Quaternion.LookRotation(moveDirection);
+    }
+
+    protected virtual void HandleMove()
+    {
+        if (moveDirection != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(moveDirection);
+        }
         transform.position += speed * Time.deltaTime * moveDirection;
     }
 
-    protected virtual void HandleAttack()
+    protected virtual void HandleAсtion()
     {
 
     }
@@ -123,6 +148,17 @@ public class BaseEnemy : MonoBehaviour
     {
         lootController.InstantiateExperienceBlob(experiencePrefab, transform.position, transform.rotation);
         Destroy(gameObject);
+    }
+
+    protected void Delay(Action func, float delaySeconds)
+    {
+        StartCoroutine(DelayInternal(func, delaySeconds));
+    }
+
+    private IEnumerator DelayInternal(Action func, float delaySeconds)
+    {
+        yield return new WaitForSeconds(delaySeconds);
+        func();
     }
 
     public bool ReceiveDamage(int damage)

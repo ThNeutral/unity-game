@@ -17,7 +17,7 @@ public class TowerController : MonoBehaviour
     {
         towersDataProvider = FindObjectOfType<TowersDataProvider>();
         enemyController = FindObjectOfType<EnemyController>();
-        PlaceTower(towersDataProvider.GetTowerDatas()[0].Tower, new Vector3(-20f, 0, -10f), transform.rotation);
+        PlaceTower(towersDataProvider.GetTowerDatas()[0].Tower, new Vector3(-10f, 0, -3f), transform.rotation);
     }
 
     public BaseEnemy GetTarget(BaseTower tower)
@@ -43,7 +43,7 @@ public class TowerController : MonoBehaviour
 
     public List<BaseTower> GetTowersInSphere(Vector3 center, float radius)
     {
-        List<BaseTower> towersInRange = new List<BaseTower>();
+        List<BaseTower> towersInRange = new();
 
         foreach (var tower in instantiatedTowers.Keys)
         {

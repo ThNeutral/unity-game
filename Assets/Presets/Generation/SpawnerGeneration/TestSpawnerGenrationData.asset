@@ -13,9 +13,6 @@ MonoBehaviour:
   m_Name: TestSpawnerGenrationData
   m_EditorClassIdentifier: 
   generationPoints:
-  - prefab: {fileID: 6733951590039932377, guid: b4a740564cc7c6f4bb278dee38360687, type: 3}
-    position: {x: 6.7311974, y: 0, z: 3.3674989}
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - prefab: {fileID: 6733951590039932377, guid: 99adc8be41a0a41ca84250fdf29482b7, type: 3}
-    position: {x: -11.714534, y: 0, z: 9.046516}
+  - prefab: {fileID: 6733951590039932377, guid: de08d1b513816264eabcde4b02ad054d, type: 3}
+    position: {x: -6.0498705, y: 0, z: -12.458403}
     color: {r: 1, g: 1, b: 1, a: 1}

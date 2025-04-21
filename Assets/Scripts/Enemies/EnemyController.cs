@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject spawnerPrefab;
-
     private Dictionary<BaseSpawner, bool> instantiatedSpawners = new();
 
     private GenerationDataProvider generationDataProvider;
@@ -77,6 +74,11 @@ public class EnemyController : MonoBehaviour
         return closestEnemy;
     }
 
+    public void Register(BaseSpawner spawner)
+    {
+        instantiatedSpawners[spawner] = true;
+    }
+
     public List<NavigationPoint> GetRoute(EnemyType type, Vector3 startPos)
     {
         return generationDataProvider.NavigationProvider.GetRemainingRoute(type, startPos);
@@ -94,15 +96,18 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    public GameObject PlaceSpawner(Vector3 position, Quaternion rotation)
-    {
-        return PlaceSpawner(spawnerPrefab, position, rotation);
-    }
-
-    public GameObject PlaceSpawner(GameObject spawnerPrefab, Vector3 position, Quaternion rotation)
+    public (GameObject gameObject, BaseSpawner spawner) PlaceSpawner(GameObject spawnerPrefab, Vector3 position, Quaternion rotation)
     {
         var spawner = Instantiate(spawnerPrefab, position, rotation);
-        instantiatedSpawners[spawner.GetComponentInChildren<BaseSpawner>()] = true;
-        return spawner;
+        var behaviour = spawner.GetComponentInChildren<BaseSpawner>();
+        instantiatedSpawners[behaviour] = true;
+        return (spawner, behaviour);
+    }
+    public (GameObject gameObject, BaseSpawner spawner) PlaceSpawner(GameObject spawnerPrefab, Vector3 position, Quaternion rotation, Transform parent)
+    {
+        var spawner = Instantiate(spawnerPrefab, position, rotation, parent);
+        var behaviour = spawner.GetComponentInChildren<BaseSpawner>();
+        instantiatedSpawners[behaviour] = true;
+        return (spawner, behaviour);
     }
 }

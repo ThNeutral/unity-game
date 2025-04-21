@@ -43,15 +43,12 @@ public class BaseTower : MonoBehaviour
         HandleLivingTower();
     }
 
-    private void HandleAim()
+    protected virtual void HandleAim()
     {
-        if (!IsValidTarget())
-        {
-            target = towerController.GetTarget(this);
-        }
+        target = towerController.GetTarget(this);
     }
 
-    private void HandleLivingTower()
+    protected virtual void HandleLivingTower()
     {
         counter += Time.deltaTime;
         while (counter > shootSpeed)

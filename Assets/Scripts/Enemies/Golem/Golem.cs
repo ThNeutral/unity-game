@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -48,7 +48,7 @@ public class Golem : BaseEnemy
 
     private bool isDead = false;
 
-    public override EnemyType Type => EnemyType.GOLEM;
+    public override EnemyType Type => EnemyType.Golem;
     private new void Start()
     {
         base.Start();
@@ -74,7 +74,7 @@ public class Golem : BaseEnemy
         }
     }
 
-    protected override void HandleAttack()
+    protected override void HandleAсtion()
     {
         if (isDead) return;
 
@@ -90,12 +90,12 @@ public class Golem : BaseEnemy
             areaAttackCounter = 0;
             normalAttackCounter = 0;
             PlayAnimation(ATTACK_AREA_TRIGGER_NAME, attackAreaAnimationLength, true);
-            StartCoroutine(Delay(() =>
+            Delay(() =>
             {
                 var destroyed = enemyController.DealDamageInArea(transform.position, areaAttackRadius, areaAttackDamage);
                 if (destroyed.Contains(target)) target = null;
             },
-            attackAreaAnimationLength * 0.5f));
+            attackAreaAnimationLength * 0.5f);
         }
 
         if (normalAttackCounter >= normalAttackDelay && distanceToTarget < normalAttackDistance)
@@ -105,7 +105,7 @@ public class Golem : BaseEnemy
             var animationLength = wasPreviousNormalAttackLeft ? attackRightAnimationLength : attackLeftAnimationLength;
             wasPreviousNormalAttackLeft = !wasPreviousNormalAttackLeft;
             PlayAnimation(triggerName, animationLength, true);
-            StartCoroutine(Delay(() =>
+            Delay(() =>
             {
                 switch (target)
                 {
@@ -121,7 +121,7 @@ public class Golem : BaseEnemy
                         }
                 }
             },
-            animationLength * 0.3f));
+            animationLength * 0.3f);
         }
     }
 
@@ -140,7 +140,7 @@ public class Golem : BaseEnemy
     {
         isDead = true;
         animator.SetTrigger(DEATH_TRIGGER_NAME);
-        StartCoroutine(Delay(base.HandleDeath, deathAnimationLength));
+        Delay(base.HandleDeath, deathAnimationLength);
     }
 
     private void PlayAnimation(string name, float length, bool shouldLockMovement)
@@ -152,15 +152,9 @@ public class Golem : BaseEnemy
         }
     }
 
-    private IEnumerator Delay(Action func, float delaySeconds)
-    {
-        yield return new WaitForSeconds(delaySeconds);
-        func();
-    }
-
     private void LockMovement(float unlockDelay)
     {
         isMovementLocked = true;
-        StartCoroutine(Delay(() => isMovementLocked = false, unlockDelay));
+        Delay(() => isMovementLocked = false, unlockDelay);
     }
 }
