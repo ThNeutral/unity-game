@@ -14,48 +14,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paths:
   - type: 0
-    path:
-    - lockedAxes:
-        x: 0
-        y: 1
-        z: 0
-      size: {x: 1, y: 20000, z: 1}
-      position: {x: -12.276958, y: 0, z: 5.1843786}
-      color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-    - lockedAxes:
-        x: 0
-        y: 1
-        z: 0
-      size: {x: 1, y: 20000, z: 1}
-      position: {x: -9.473534, y: 0, z: -2.4983084}
-      color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-    - lockedAxes:
-        x: 0
-        y: 1
-        z: 0
-      size: {x: 1, y: 20000, z: 1}
-      position: {x: -15.810564, y: 0, z: -10.451591}
-      color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    path: []
   - type: 1
+    path: []
+  - type: 2
     path:
     - lockedAxes:
         x: 0
         y: 1
         z: 0
       size: {x: 1, y: 20000, z: 1}
-      position: {x: 4.377063, y: 0, z: 7.536772}
+      position: {x: -6.0053616, y: 0, z: -7.392586}
       color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
     - lockedAxes:
         x: 0
         y: 1
         z: 0
       size: {x: 1, y: 20000, z: 1}
-      position: {x: 0, y: 0, z: 12.745124}
+      position: {x: -6.1301756, y: 0, z: 2.20333}
       color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
     - lockedAxes:
         x: 0
         y: 1
         z: 0
       size: {x: 1, y: 20000, z: 1}
-      position: {x: 0, y: 0, z: 18.657455}
+      position: {x: 0, y: 0, z: 5.2033734}
       color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  - type: 3
+    path: []

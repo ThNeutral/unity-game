@@ -32,7 +32,7 @@ public class Experience : MonoBehaviour
         if (mergeTarget == null) mergeTarget = lootController.GetMergeTarget(this);
         if (mergeTarget != null) MagnetTo(mergeTarget.transform);
 
-        transform.localScale = Vector3.one * Mathf.Sqrt(experience) / 4.0f;
+        transform.localScale = Vector3.one * Mathf.Log(experience);
         rb.mass = experience / 4.0f;
     }
     private void MagnetTo(Transform other)

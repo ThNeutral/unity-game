@@ -7,7 +7,7 @@ using System.Linq;
 [CustomEditor(typeof(NavigationData))]
 public class NavigationDataEditor : Editor
 {
-    private EnemyType selectedEnemyType = EnemyType.BASE;
+    private EnemyType selectedEnemyType = EnemyType.Base;
     private void OnEnable()
     {
         SceneView.duringSceneGui -= OnSceneGUI;
@@ -57,6 +57,12 @@ public class NavigationDataEditor : Editor
     {
         var data = (NavigationData)target;
         selectedEnemyType = (EnemyType)EditorGUILayout.EnumPopup("Select Enemy Type", selectedEnemyType);
+
+        if (ControlledEnemyTypes.IsControlled(selectedEnemyType))
+        {
+            EditorGUILayout.HelpBox("Cannot add path to this enemy", MessageType.Warning);
+            return;
+        }
 
         var path = data.paths.FirstOrDefault(p => p.type == selectedEnemyType);
         if (path == null)

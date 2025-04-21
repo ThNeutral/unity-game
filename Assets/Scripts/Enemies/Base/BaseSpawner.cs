@@ -7,32 +7,35 @@ using UnityEngine.Assertions;
 public class BaseSpawner : MonoBehaviour
 {
     [SerializeField]
-    private Bounds spawnZone;
+    protected Bounds spawnZone;
     [SerializeField] 
-    private Bounds spawnExclusionZone;
+    protected Bounds spawnExclusionZone;
 
     [SerializeField]
-    private float spawnDelay = 0.2f;
-    private float counter = 0f;
+    protected float spawnDelay = 0.2f;
+    protected float counter = 0f;
 
     [SerializeField]
-    private GameObject enemy;
+    protected GameObject enemy;
 
-    private EnemyController enemyController;
-    private Dictionary<BaseEnemy, bool> instantiatedEnemies = new();
+    protected EnemyController enemyController;
+    protected Dictionary<BaseEnemy, bool> instantiatedEnemies = new();
 
     [SerializeField]
-    private int maxNumberOfSpawns = 5;
-    private int currentNumberOfSpawns;
+    protected int maxNumberOfSpawns = 5;
+    protected int CurrentNumberOfSpawns => instantiatedEnemies.Count;
+
+    protected bool isControlled = false;
 
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
         enemyController = FindFirstObjectByType<EnemyController>();
     }
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
+        if (isControlled) return;
         counter += Time.deltaTime;
         while (counter > spawnDelay) 
         {
@@ -42,8 +45,7 @@ public class BaseSpawner : MonoBehaviour
     }
     public void SpawnEnemy()
     {
-        if (maxNumberOfSpawns != -1 && currentNumberOfSpawns >= maxNumberOfSpawns) return;
-        currentNumberOfSpawns += 1;
+        if (maxNumberOfSpawns != -1 && CurrentNumberOfSpawns >= maxNumberOfSpawns) return;
         const int maxCount = 100;
         int count = 0;
         Vector3 spawnPoint;
